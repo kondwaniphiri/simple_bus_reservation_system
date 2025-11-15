@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="style/admin.style.css" />
+    <link rel="stylesheet" href="fontawesome/css/all.css" />
+  </head>
+  <body>
+    <header></header>
+
+    <nav>
+      <ul>
+        <li id="busListLink">Bus List |</li>
+        <li id="scheduleListLink">Schedule List |</li>
+        <li id="reservationsListLink">Reservation List</li>
+      </ul>
+    </nav>
+
+    <section id="generateArea">
+      <div id="search">
+        <span>Search</span>
+        <input type="text" name="" id="searchBar" />
+        <span><i class="fas fa-search"></i></span>
+      </div>
+      <h1 id="title">Bus List</h1>
+      <div id="controls">
+        <button id="add">Add</button>
+        <button id="delete">Delete</button>
+        <button id="edit">Edit</button>
+      </div>
+
+      <div id="table">
+        <table></table>
+      </div>
+    </section>
+
+    <section id="popupDialog"></section>
+
+    <script src="js/jquery-3.6.0.min.js"></script>
+    <script src="js/admin.script.js"></script>
+    <script>
+      // Check admin authentication
+      if (
+        !localStorage.getItem("username") ||
+        !localStorage.getItem("userId")
+      ) {
+        window.location.href = "index.html";
+      }
+    </script>
+  </body>
+</html>

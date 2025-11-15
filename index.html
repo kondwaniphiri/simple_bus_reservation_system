@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="style/index.css" />
+    <title>Hard Work Travels</title>
+  </head>
+  <body>
+    <section class="forms-section">
+      <h1 class="section-title">Hard Work Travels</h1>
+      <div class="forms">
+        <div class="form-wrapper is-active">
+          <button type="button" class="switcher switcher-login">
+            Login
+            <span class="underline"></span>
+          </button>
+          <form class="form form-login">
+            <fieldset>
+              <legend>Please, enter your email and password for login.</legend>
+              <div class="input-block">
+                <label for="login-email">E-mail</label>
+                <input id="login-email" type="email" required />
+              </div>
+              <div class="input-block">
+                <label for="login-password">Password</label>
+                <input id="login-password" type="password" required />
+              </div>
+            </fieldset>
+            <button type="submit" class="btn-login">Login</button>
+          </form>
+        </div>
+        <div class="form-wrapper">
+          <button type="button" class="switcher switcher-signup">
+            Sign Up
+            <span class="underline"></span>
+          </button>
+          <form class="form form-signup">
+            <fieldset>
+              <legend>
+                Please, enter your email, password and password confirmation for
+                sign up.
+              </legend>
+              <div class="input-block">
+                <label for="signup-email">E-mail</label>
+                <input id="signup-email" type="email" required />
+              </div>
+              <div class="input-block">
+                <label for="signup-username">Username</label>
+                <input
+                  id="signup-username"
+                  name="signup-location"
+                  type="text"
+                  required
+                />
+              </div>
+              <div class="input-block">
+                <label for="signup-location">location</label>
+                <input
+                  list="locations"
+                  id="signup-location"
+                  type="text"
+                  required
+                />
+                <datalist id="locations">
+                  <option value="Kitwe">Kitwe</option>
+                  <option value="Chingola">Chingola</option>
+                  <option value="Ndola">Ndola</option>
+                  <option value="Lusaka">Lusaka</option>
+                </datalist>
+              </div>
+              <div class="input-block">
+                <label for="signup-password">Password</label>
+                <input id="signup-password" type="password" required />
+              </div>
+              <div class="input-block">
+                <label for="signup-password-confirm">Confirm password</label>
+                <input id="signup-password-confirm" type="password" required />
+              </div>
+            </fieldset>
+            <button type="submit" class="btn-signup">Continue</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <script>
+      const switchers = [...document.querySelectorAll(".switcher")];
+
+      switchers.forEach((item) => {
+        item.addEventListener("click", function () {
+          switchers.forEach((item) =>
+            item.parentElement.classList.remove("is-active")
+          );
+          this.parentElement.classList.add("is-active");
+        });
+      });
+
+      // Email validation function
+      function isValidEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+      }
+
+      // Password strength validation
+      function isStrongPassword(password) {
+        return password.length >= 6;
+      }
+
+      // Show error message
+      function showError(message) {
+        const errorDiv = document.createElement("div");
+        errorDiv.className = "error-message";
+        errorDiv.textContent = message;
+        errorDiv.style.cssText =
+          "background-color: #ffebee; color: #c62828; padding: 10px; margin: 10px 0; border-radius: 5px; text-align: center;";
+
+        const formsSection = document.querySelector(".forms-section");
+        const existingError = document.querySelector(".error-message");
+        if (existingError) {
+          existingError.remove();
+        }
+        formsSection.insertBefore(errorDiv, formsSection.firstChild);
+
+        setTimeout(() => errorDiv.remove(), 5000);
+      }
+
+      // Show success message
+      function showSuccess(message) {
+        const successDiv = document.createElement("div");
+        successDiv.className = "success-message";
+        successDiv.textContent = message;
+        successDiv.style.cssText =
+          "background-color: #e8f5e9; color: #2e7d32; padding: 10px; margin: 10px 0; border-radius: 5px; text-align: center;";
+
+        const formsSection = document.querySelector(".forms-section");
+        const existingSuccess = document.querySelector(".success-message");
+        if (existingSuccess) {
+          existingSuccess.remove();
+        }
+        formsSection.insertBefore(successDiv, formsSection.firstChild);
+
+        setTimeout(() => successDiv.remove(), 5000);
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        const loginForm = document.querySelector(".form-login");
+        const signupForm = document.querySelector(".form-signup");
+
+        signupForm.addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          const email = document.getElementById("signup-email").value.trim();
+          const username = document
+            .getElementById("signup-username")
+            .value.trim();
+          const password = document.getElementById("signup-password").value;
+          const passwordConfirm = document.getElementById(
+            "signup-password-confirm"
+          ).value;
+          const location = document.getElementById("signup-location")
+            ? document.getElementById("signup-location").value.trim()
+            : "";
+
+          // Validation
+          if (
+            !email ||
+            !username ||
+            !password ||
+            !passwordConfirm ||
+            !location
+          ) {
+            showError("All fields are required!");
+            return;
+          }
+
+          if (!isValidEmail(email)) {
+            showError("Please enter a valid email address!");
+            return;
+          }
+
+          if (!isStrongPassword(password)) {
+            showError("Password must be at least 6 characters long!");
+            return;
+          }
+
+          if (password !== passwordConfirm) {
+            showError("Passwords do not match!");
+            return;
+          }
+
+          // Show loading state
+          const submitBtn = this.querySelector('button[type="submit"]');
+          const originalText = submitBtn.textContent;
+          submitBtn.textContent = "Creating account...";
+          submitBtn.disabled = true;
+
+          fetch("http://localhost/BusReserve/transactions.php", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: `action=register&email=${encodeURIComponent(
+              email
+            )}&username=${encodeURIComponent(
+              username
+            )}&password=${encodeURIComponent(
+              password
+            )}&location=${encodeURIComponent(location)}`,
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              submitBtn.textContent = originalText;
+              submitBtn.disabled = false;
+
+              if (data.register) {
+                showSuccess(data.message);
+                setTimeout(() => {
+                  window.location.href = "index.html";
+                }, 1500);
+              } else {
+                showError("Registration failed: " + data.message);
+              }
+            })
+            .catch((error) => {
+              submitBtn.textContent = originalText;
+              submitBtn.disabled = false;
+              console.error("Error:", error);
+              showError(
+                "Connection error. Please check if the server is running."
+              );
+            });
+        });
+
+        loginForm.addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          const email = document.getElementById("login-email").value.trim();
+          const password = document.getElementById("login-password").value;
+
+          // Validation
+          if (!email || !password) {
+            showError("Both email and password are required!");
+            return;
+          }
+
+          if (!isValidEmail(email)) {
+            showError("Please enter a valid email address!");
+            return;
+          }
+
+          // Show loading state
+          const submitBtn = this.querySelector('button[type="submit"]');
+          const originalText = submitBtn.textContent;
+          submitBtn.textContent = "Logging in...";
+          submitBtn.disabled = true;
+
+          fetch("http://localhost/BusReserve/transactions.php", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: `action=login&email=${encodeURIComponent(
+              email
+            )}&password=${encodeURIComponent(password)}`,
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              submitBtn.textContent = originalText;
+              submitBtn.disabled = false;
+
+              console.log(data);
+              if (data.login) {
+                // Save username and ID to local storage
+                localStorage.setItem("username", data.username);
+                localStorage.setItem("userId", data.id);
+
+                showSuccess(data.message);
+                setTimeout(() => {
+                  if (data.position === "admin") {
+                    window.location.href = "admin.dashboard.html";
+                  } else {
+                    window.location.href = "home.html";
+                  }
+                }, 1000);
+              } else {
+                showError("Login failed: " + data.message);
+              }
+            })
+            .catch((error) => {
+              submitBtn.textContent = originalText;
+              submitBtn.disabled = false;
+              console.error("Error:", error);
+              showError(
+                "Connection error. Please check if the server is running."
+              );
+            });
+        });
+      });
+    </script>
+  </body>
+</html>
