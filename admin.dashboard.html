@@ -1,53 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Admin Dashboard</title>
-    <link rel="stylesheet" href="style/admin.style.css" />
-    <link rel="stylesheet" href="fontawesome/css/all.css" />
-  </head>
-  <body>
-    <header></header>
-
-    <nav>
-      <ul>
-        <li id="busListLink">Bus List |</li>
-        <li id="scheduleListLink">Schedule List |</li>
-        <li id="reservationsListLink">Reservation List</li>
-      </ul>
-    </nav>
-
-    <section id="generateArea">
-      <div id="search">
-        <span>Search</span>
-        <input type="text" name="" id="searchBar" />
-        <span><i class="fas fa-search"></i></span>
-      </div>
-      <h1 id="title">Bus List</h1>
-      <div id="controls">
-        <button id="add">Add</button>
-        <button id="delete">Delete</button>
-        <button id="edit">Edit</button>
-      </div>
-
-      <div id="table">
-        <table></table>
-      </div>
-    </section>
-
-    <section id="popupDialog"></section>
-
-    <script src="js/jquery-3.6.0.min.js"></script>
-    <script src="js/admin.script.js"></script>
-    <script>
-      // Check admin authentication
-      if (
-        !localStorage.getItem("username") ||
-        !localStorage.getItem("userId")
-      ) {
-        window.location.href = "index.html";
-      }
-    </script>
-  </body>
-</html>
+<html lang="en"><head>
+<meta name="author" content="Kondwani Phiri">
+<!-- Project author: Kondwani Phiri | Attribution marker: KP-HWL-2025 --><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Operations | Hard Work Logistics</title><link rel="stylesheet" href="style/admin.style.css"></head>
+<body><header><div><h1>Hard Work Logistics</h1><p>Branch and fleet operations</p></div><div><span id="operator"></span> <a href="index.html">Customer site</a> <button id="logout">Sign out</button></div></header>
+<nav aria-label="Management"><button data-view="buses">Fleet</button><button data-view="schedule">Trips</button><button data-view="reservations">Bookings</button><button data-view="sites">Branches</button><button data-view="drivers">Drivers</button><button data-view="maintenance">Maintenance</button><button data-view="enquiries">Enquiries</button><button data-view="users" class="admin-only">People & access</button><button data-view="audit" class="admin-only">Activity</button></nav>
+<main><div id="message" role="status" aria-live="polite"></div><section id="metrics" aria-label="Branch summary"></section><section class="panel"><div class="toolbar"><h2 id="title">Fleet</h2><label>Branch <select id="branch"><option value="">All branches</option></select></label><label>Search <input id="searchBar" type="search" placeholder="Search this list"></label><button id="refresh">Refresh</button><button id="export">Export CSV</button><button id="add">Add</button></div><p id="list-help">Select Edit to manage a record.</p><div class="table-wrap"><table><thead></thead><tbody></tbody></table></div></section></main><footer style="padding:20px 4%;font-size:12px;color:#737076">Developed by Kondwani Phiri</footer>
+<dialog id="editor"><form id="record-form"><h2 id="form-title"></h2><div id="fields"></div><p id="form-error" role="alert"></p><div class="form-actions"><button type="button" id="close-editor">Cancel</button><button type="submit" id="save">Save</button></div></form></dialog>
+<script src="js/jquery-3.6.0.min.js"></script><script src="js/api.js"></script><script src="js/admin.script.js"></script></body></html>

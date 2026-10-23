@@ -1,167 +1,100 @@
-# Quick Setup Guide - Hard Work Logistics Bus Reservation System
+﻿# Setup - Hard Work Logistics
 
-## ⚡ Quick Start (5 Minutes)
+**Author: Kondwani Phiri** · `KP-HWL-2025`
 
-### Step 1: Setup Web Server
+## Requirements
 
-1. Download and install [XAMPP](https://www.apachefriends.org/)
-2. Start Apache and MySQL from XAMPP Control Panel
+- PHP 8.0+ with mysqli/mysqlnd and sessions.
+- MySQL 8.0+; the schema uses `utf8mb4_0900_ai_ci`.
+- A modern browser. Node.js 18+ is needed only for JavaScript tests.
 
-### Step 2: Setup Database
+## 1. Import the database
 
-1. Open browser and go to: `http://localhost/phpmyadmin`
-2. Click "New" to create a database
-3. Name it: `bus_ticket`
-4. Click on the database name
-5. Click "Import" tab
-6. Choose file: `Backend/bus_ticket.sql`
-7. Click "Go"
+Create an empty database named `bus_ticket`, select it in phpMyAdmin or your SQL client, and import:
 
-### Step 3: Configure Database Connection
-
-1. Open file: `Backend/BusReserve/Constants.php`
-2. Update if needed (default works for XAMPP):
-   ```php
-   <?php
-   define('DB_NAME','bus_ticket');
-   define('DB_HOST','localhost');
-   define('DB_USER','root');
-   define('DB_PASSWORD','');  // Leave empty for default XAMPP
-   ?>
-   ```
-
-### Step 4: Copy Backend Files
-
-1. Copy folder: `Backend/BusReserve/`
-2. Paste to: `C:\xampp\htdocs\` (Windows) or `/Applications/XAMPP/htdocs/` (Mac)
-
-### Step 5: Run the Application
-
-1. Open browser
-2. Go to: `http://localhost/Bus%20Reservation/index.html`
-3. Or navigate to where you placed the files
-
-## 🔑 Test Accounts
-
-### Admin Account
-
-```
-Email: admin@admin
-Password: admin123
-Role: Administrator
+```text
+Backend/bus_ticket.sql
 ```
 
-### Customer Test Accounts
+This is the complete current schema and data. No second SQL file or initial migration is required. Do not import it over a working database; the export does not drop existing tables.
 
-The database includes several test customer accounts. For security, all passwords are hashed.
+The file preserves historical records and contains bookable departures for 24 October–6 November 2026. Imported dates do not move with the import date. Add or extend trips in the dashboard as needed.
 
-**Option 1: Register New Account (Recommended)**
+## 2. Configure the application
 
-- Use the Sign Up form to create your own account
-- Choose any email and password
+The working local `.env` already contains its verified database credentials and available account references. Keep that file private. For a different installation, copy `.env.example` to `.env` and fill in:
 
-**Option 2: Use Existing Test Users**
-Pre-loaded test usernames (you'll need to set passwords yourself):
-
-```
-peter@gmail.com   - Location: Chingola
-jacob@gmail.com   - Location: Kitwe
-john@gmail.com    - Location: Lusaka
-paul@gmail.com    - Location: Kitwe
-jane@gmail.com    - Location: Chingola
-nancy@gmail.com   - Location: Lusaka
-mary@gmail.com    - Location: Chingola
+```dotenv
+BUS_DB_HOST="127.0.0.1"
+BUS_DB_PORT="3306"
+BUS_DB_NAME="bus_ticket"
+BUS_DB_USER="your_database_user"
+BUS_DB_PASSWORD="your_database_password"
+CONTACT_RATE_LIMIT="5"
+CONTACT_MIN_LENGTH="20"
+CONTACT_MAX_LENGTH="4000"
 ```
 
-**Note**: These accounts have hashed passwords. To use them, you can:
+PHP loads `.env` automatically. System environment variables override file values. `ACCOUNT_*` entries are private login references; authentication still uses the password hashes in MySQL. The export never includes `.env` secrets.
 
-1. Reset passwords via phpMyAdmin (login table)
-2. Or simply create a new account through registration
+## 3. Start the site
 
-**Best Practice**: Register a fresh account for testing!
+Open a terminal in the project root:
 
-## ✅ Verify Installation
+```powershell
+php -S 127.0.0.1:8080 router.php
+```
 
-1. Can you see the login page? ✓
-2. Can you register a new account? ✓
-3. Can you login? ✓
-4. Can you see the schedule? ✓
-5. Can you make a reservation? ✓
+Visit `http://localhost:8080`. Visitors see the homepage first. Sign up to unlock trip search, booking and account features. Staff accounts enter the operations dashboard according to their role. Refer to `.env` for existing local credentials.
 
-## 🆘 Common Issues
+Serve the entire project from one directory. Do not copy the backend into a separate web folder. For Apache 2.4, enable `mod_rewrite` and the included `.htaccess` rules with `AllowOverride AuthConfig FileInfo Options`. Use HTTPS in deployment.
 
-### Issue: "Connection failed" error
+## 4. Check the installation
 
-**Fix**:
+- Public routes show starting fares and a next departure.
+- A customer can sign in, view departures and reserve an available seat.
+- Staff can manage their permitted branches and view contact enquiries.
+- `.env`, SQL files and tests cannot be downloaded through the web server.
 
-- Make sure MySQL is running in XAMPP
-- Check database name is `bus_ticket`
-- Verify `Constants.php` settings
+Contact submissions go to **Enquiries** in the staff dashboard. Outgoing email requires a separate SMTP integration.
 
-### Issue: "404 Not Found" on login
+## Updating an existing installation
 
-**Fix**:
+Back up the database, then run schema upgrades:
 
-- Make sure `BusReserve` folder is in `htdocs`
-- Check the URL: `http://localhost/BusReserve/transactions.php`
+```powershell
+php Backend/BusReserve/migrate.php
+```
 
-### Issue: Reservations not working
+After changing records, regenerate the single SQL snapshot:
 
-**Fix**:
+```powershell
+php Backend/BusReserve/export_database.php
+```
 
-- Check browser console for errors (F12)
-- Verify database has data (check phpMyAdmin)
-- Clear browser cache and reload
+The exporter reads the configured working database using a consistent snapshot. It keeps actual date values and password hashes, and leaves the transient login-throttle table empty. Database credentials remain in `.env`.
 
-## 📝 Next Steps
+## Full regression tests
 
-1. **Change Admin Password**
+Create a separate empty database such as `bus_reservation_test` and import `Backend/bus_ticket.sql`. In a test server terminal:
 
-   - Login as admin
-   - Go to database and update password
+```powershell
+$env:BUS_DB_NAME = 'bus_reservation_test'
+php -S 127.0.0.1:8087 router.php
+```
 
-2. **Add Your Buses**
+In another terminal, set the same database name and run:
 
-   - Admin Dashboard → Bus List → Add
+```powershell
+$env:BUS_DB_NAME = 'bus_reservation_test'
+node tests/integration.js
+```
 
-3. **Create Schedules**
+This suite deletes and recreates fixture records in that test database. Never point it at your working database. Ordinary page/asset checks are available with `node tests/static.js`.
 
-   - Admin Dashboard → Schedule List → Add
+## Troubleshooting
 
-4. **Customize Branding**
-   - Edit contact info in `home.html`
-   - Update company name and colors
-
-## 🎯 Features to Try
-
-1. **As Customer:**
-
-   - Register an account
-   - Browse available trips
-   - Filter by date/location
-   - Reserve a seat
-   - View notifications
-   - Print ticket
-
-2. **As Admin:**
-   - Add new buses
-   - Create schedules
-   - View reservations
-   - Edit/Delete entries
-
-## 📱 Mobile Testing
-
-Open on your phone:
-`http://[YOUR-IP-ADDRESS]/Bus%20Reservation/index.html`
-
-To find your IP:
-
-- Windows: Run `ipconfig` in cmd
-- Mac/Linux: Run `ifconfig` in terminal
-
-## 🔒 Security Reminder
-
-1. Change default admin password
-2. Update database password in production
-3. Use HTTPS in production
-4. Regular backups of database
+- **Database connection fails:** check MySQL, `.env`, and any overriding `BUS_DB_*` system variables.
+- **No departures:** add future schedules with active vehicles, valid drivers and valid service dates.
+- **Port 8080 is busy:** use another local port and open that address.
+- **Google map is blank:** use the Open Kitwe in Google Maps link; map loading needs access to Google.

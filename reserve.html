@@ -1,243 +1,203 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Bus Reservation</title>
-    <link rel="stylesheet" href="style/style.css" />
-    <link rel="stylesheet" href="fontawesome/css/all.css" />
-  </head>
-  <body>
-    <nav>
-      <span id="logo">Hard Work Logistics</span>
-      <ul id="links">
-        <li><a href="home.html">Home</a></li>
-        <li><a href="reserve.html">Reserve</a></li>
-        <li id="notifications"><a href="#">Notifications</a></li>
-        <li><a href="home.html#contact">Contact</a></li>
-        <div id="userDetails">
-          <span><i class="fas fa-user"></i></span>
-          <span id="username">-</span>
-        </div>
-        <a href="index.html" id="logout">
-          <i class="fas fa-sign-out-alt"></i> logout</a
-        >
-      </ul>
-    </nav>
+<head>
+<meta name="author" content="Kondwani Phiri">
+<!-- Project author: Kondwani Phiri | Attribution marker: KP-HWL-2025 -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#711f2b">
+<meta name="description" content="Find bus departures, choose a seat and manage your journeys between Lusaka and the Copperbelt.">
+<title>Find your next departure | Hard Work Logistics</title>
+<link rel="stylesheet" href="style/customer.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
 
-    <div id="notificationPane"></div>
+<header class="site-header">
+<a class="brand" href="index.html">
+<span class="brand-symbol">HW</span>
+<span>HARD WORK<small>LOGISTICS & TRAVEL</small>
+</span>
+</a>
+<nav aria-label="Main navigation">
+<ul id="links">
+<li>
+<a  href="index.html">Home</a>
+</li>
+<li>
+<a aria-current="page" href="reserve.html">Find a trip</a>
+</li>
+<li>
+<button id="notifications" type="button">My bookings <span id="booking-count" class="count">0</span>
+</button>
+</li>
+<li>
+<a href="index.html#contact">Our branches</a>
+</li>
+</ul>
+</nav>
+<div class="account-menu">
+<span class="avatar" aria-hidden="true">●</span>
+<span id="username">Your account</span>
+<a href="index.html" id="logout">Sign out</a>
+</div>
+</header>
+<main id="main" class="wrap booking-page">
+<div class="page-heading">
+<div>
+<h1>Find a trip
+</h1>
+</div>
+<p>Fares in ZMW. Times in Zambia time.</p>
+</div>
+<section class="filter-panel" aria-label="Find a departure">
+<div id="filters" class="filter-grid">
+<label>From<select id="filterOrigin">
+<option value="">All locations</option>
+</select>
+</label>
+<label>To<select id="filterDestination">
+<option value="">All locations</option>
+</select>
+</label>
+<label>Date<input type="date" id="filterDate">
+</label>
+<label>Departure branch<select id="filterSite">
+<option value="">All branches</option>
+</select>
+</label>
+<label>Search<input type="search" id="searchBar" placeholder="Route, bus or plate">
+</label>
+<button class="text-button" id="clear-filters" type="button">Reset filters</button>
+</div>
+</section>
+<div class="booking-layout">
+<section aria-labelledby="results-title">
+<div class="results-heading">
+<h2 id="results-title">
+<span id="result-count">—</span> departures</h2>
+<label>Sort by <select id="sortTrips">
+<option value="soonest">Soonest departure</option>
+<option value="price">Lowest fare</option>
+<option value="seats">Most seats</option>
+</select>
+</label>
+</div>
+<p id="results-status" role="status" class="caption">Loading departures…</p>
+<div id="trip-results" class="trip-results">
+</div>
+</section>
 
-    <section id="reserve">
-      <div id="container">
-        <div id="tableDetails">
-          <div id="search">
-            <span>Search:</span>
-            <input type="text" id="searchBar" placeholder="Search trips..." />
-            <i class="fas fa-search"></i>
-          </div>
-          <div
-            id="filters"
-            style="
-              width: 100%;
-              display: flex;
-              justify-content: center;
-              gap: 15px;
-              margin-bottom: 20px;
-              flex-wrap: wrap;
-            "
-          >
-            <div>
-              <label
-                for="filterDate"
-                style="margin-right: 5px; font-family: sans-serif"
-                >Date:</label
-              >
-              <input
-                type="date"
-                id="filterDate"
-                style="padding: 5px; border-radius: 3px; border: 1px solid #ccc"
-              />
-            </div>
-            <div>
-              <label
-                for="filterOrigin"
-                style="margin-right: 5px; font-family: sans-serif"
-                >From:</label
-              >
-              <select
-                id="filterOrigin"
-                style="padding: 5px; border-radius: 3px; border: 1px solid #ccc"
-              >
-                <option value="">All Locations</option>
-                <option value="Kitwe">Kitwe</option>
-                <option value="Ndola">Ndola</option>
-                <option value="Chingola">Chingola</option>
-                <option value="Lusaka">Lusaka</option>
-              </select>
-            </div>
-            <div>
-              <label
-                for="filterDestination"
-                style="margin-right: 5px; font-family: sans-serif"
-                >To:</label
-              >
-              <select
-                id="filterDestination"
-                style="padding: 5px; border-radius: 3px; border: 1px solid #ccc"
-              >
-                <option value="">All Locations</option>
-                <option value="Kitwe">Kitwe</option>
-                <option value="Ndola">Ndola</option>
-                <option value="Chingola">Chingola</option>
-                <option value="Lusaka">Lusaka</option>
-              </select>
-            </div>
-            <button
-              onclick="clearFilters()"
-              style="
-                padding: 5px 15px;
-                background-color: #711313;
-                color: white;
-                border: none;
-                border-radius: 3px;
-                cursor: pointer;
-              "
-            >
-              Clear Filters
-            </button>
-          </div>
-          <div class="clickedDetailsChild" id="userDetails">
-            <span><b>Id:</b></span>
-            <span id="user_id">-</span>
-            <span><b>Username:</b></span>
-            <span id="username2">-</span>
-          </div>
-          <div class="clickedDetails">
-            <div class="clickedDetailsChild">
-              <span><b>Date: </b></span>
-              <span id="clickDate">-</span>
-              <span><b>Bus: </b></span>
-              <span id="clickBus">-</span>
-              <span><b>Available seats: </b></span>
-              <span id="clickSeats">-</span>
-            </div>
-            <div class="clickedDetailsChild">
-              <span><b>From: </b></span>
-              <span id="clickOrigin">-</span>
-              <span><b>To: </b></span>
-              <span id="clickDestination">-</span>
-            </div>
-            <div class="clickedDetailsChild">
-              <span><b>From: </b></span>
-              <span id="clickStart">-</span>
-              <span><b>To: </b></span>
-              <span id="clickEnd">-</span>
-            </div>
-            <div class="clickedDetailsChild" id="reserveSeat">
-              <button>Reserve Seat</button>
-            </div>
-          </div>
-        </div>
+</div>
+</main>
+<footer class="site-footer"><div class="simple-footer"><strong>Hard Work Logistics</strong><nav aria-label="Footer"><a href="reserve.html">Find a trip</a><a href="index.html#contact">Branches</a></nav><span>&copy; 2025–2026 Hard Work Logistics</span><span class="author-credit">Developed by Kondwani Phiri</span></div></footer>
+<dialog id="bookings-dialog" class="wide-dialog">
+<div class="dialog-heading">
+<div>
+<h2>My bookings</h2>
+</div>
+<button class="icon-button" type="button" data-close="bookings-dialog" aria-label="Close bookings">×</button>
+</div>
+<div id="notificationPane">
+</div>
+</dialog>
+<dialog id="password-dialog">
+<form id="password-form">
+<div class="dialog-heading">
+<h2>Change password</h2>
+<button type="button" class="icon-button" data-close="password-dialog" aria-label="Close password form">×</button>
+</div>
+<label>Current password<input name="current_password" type="password" required autocomplete="current-password">
+</label>
+<label>New password<input name="new_password" type="password" minlength="10" maxlength="72" required autocomplete="new-password">
+</label>
+<p class="muted">Use at least 10 characters.</p>
+<button class="button primary">Save password</button>
+</form>
+</dialog>
+<dialog id="seat-dialog" class="wide-dialog">
+<div class="dialog-heading">
+<div>
+<h2>Choose your seat</h2>
+</div>
+<button type="button" class="icon-button" data-close="seat-dialog" aria-label="Close seat selection">×</button>
+</div>
+<div class="seat-dialog-layout">
+<div>
+<div class="seat-legend">
+<span>
+<i class="legend-seat">
+</i>Available</span>
+<span>
+<i class="legend-seat selected">
+</i>Selected</span>
+<span>
+<i class="legend-seat unavailable">
+</i>Unavailable</span>
+</div>
+<div class="coach-layout">
+<div class="coach-front">
+<span>FRONT OF COACH</span>
+<span aria-hidden="true">◉</span>
+</div>
+<div id="selectedSeat" class="seat-grid">
+</div>
+</div>
 
-        <table></table>
-      </div>
+</div>
+<div class="seat-summary">
+<h3 id="seat-route">
+</h3>
+<dl>
+<div>
+<dt>Departure</dt>
+<dd id="seat-departure">
+</dd>
+</div>
+<div>
+<dt>Arrival</dt>
+<dd id="seat-arrival">
+</dd>
+</div>
+<div>
+<dt>Vehicle</dt>
+<dd id="seat-vehicle">
+</dd>
+</div>
+<div>
+<dt>Boarding branch</dt>
+<dd id="seat-branch">
+</dd>
+</div>
+<div>
+<dt>Passenger</dt>
+<dd id="seat-passenger">
+</dd>
+</div>
+<div>
+<dt>Selected seat</dt>
+<dd id="selectedSeatText">Choose a seat</dd>
+</div>
+</dl>
+<div class="seat-total">
+<span>Fare / one seat</span>
+<strong id="seat-fare">
+</strong>
+</div>
 
-      <div id="popUpReserveDialog">
-        <h4 id="exit">X</h4>
-        <div class="popUpDetails" id="">
-          <span><b>Id: </b></span>
-          <span id="popUpId">- </span><br />
-          <span><b>Username: </b></span>
-          <span id="popUpUsername">- </span>
-        </div>
-        <div class="popUpDetails" id="">
-          <span><b>Trip id: </b></span>
-          <span id="popUpTripId"><b>- </b></span>
-        </div>
-        <div class="popUpDetails" id="">
-          <span><b>Date: </b></span>
-          <span id="popUpDate">-</span>
-        </div>
-        <div class="popUpDetails" id="">
-          <span><b>From: </b></span>
-          <span id="popUpOrigin">-</span>
-          <span><b>To: </b></span>
-          <span id="popUpDestination">-</span>
-        </div>
-        <div id="seatSelector">
-          <span>Selected Seat: </span>
-          <span id="selectedSeatText">-</span>
-          <div id="selectedSeat"></div>
-        </div>
-        <button id="reserveButton">Reserve</button>
-      </div>
-    </section>
-
-    <footer>
-      <div id="footerContact">
-        <a href="tel:+260211234567"
-          ><i class="fa fa-phone"></i> +260 211 234 567</a
-        >
-        <a href="mailto:info@hardworklogistics.co.zm"
-          ><i class="fa fa-envelope"></i> info@hardworklogistics.co.zm</a
-        >
-        <div id="footerLocations">
-          <a href="#"
-            ><i class="fa fa-map-marker"></i> Independence Way, Chingola |</a
-          >
-          <a href="#"><i class="fa fa-map-marker"></i> Broadway, Ndola |</a>
-          <a href="#"
-            ><i class="fa fa-map-marker"></i> Freedom Avenue, Kitwe |</a
-          >
-        </div>
-      </div>
-      <div id="catalogue">
-        <label for="newsletter-email"
-          >For more regular updates please Subscribe</label
-        >
-        <input
-          type="email"
-          name="newsletter-email"
-          id="newsletter-email"
-          placeholder="your@email.com"
-        />
-        <button onclick="subscribeNewsletter()">Subscribe</button>
-      </div>
-      <div id="socials">
-        <a href="https://facebook.com/hardworklogistics"
-          ><i class="fab fa-facebook"></i
-        ></a>
-        <a href="https://instagram.com/hardworklogistics"
-          ><i class="fab fa-instagram"></i
-        ></a>
-        <a href="https://linkedin.com/company/hardworklogistics"
-          ><i class="fab fa-linkedin"></i
-        ></a>
-      </div>
-      <h4>All Rights Reserved 2025 - Hard Work Logistics</h4>
-    </footer>
-    <script>
-      function subscribeNewsletter() {
-        const email = document.getElementById("newsletter-email").value;
-        if (email && isValidEmail(email)) {
-          showToast("Thank you for subscribing to our newsletter!", "success");
-          document.getElementById("newsletter-email").value = "";
-        } else {
-          showToast("Please enter a valid email address", "error");
-        }
-      }
-    </script>
-    <script src="js/jquery-3.6.0.min.js"></script>
-    <script src="js/utils.js"></script>
-    <script src="js/script.js"></script>
-    <script>
-      // Check authentication
-      if (
-        !localStorage.getItem("username") ||
-        !localStorage.getItem("userId")
-      ) {
-        window.location.href = "index.html";
-      }
-    </script>
-  </body>
+<button type="button" class="button primary" id="reserveButton" disabled>Confirm reservation</button>
+<p id="seat-message" role="status">
+</p>
+</div>
+</div>
+</dialog>
+<script src="js/jquery-3.6.0.min.js">
+</script>
+<script src="js/api.js">
+</script>
+<script src="js/utils.js">
+</script>
+<script src="js/script.js">
+</script>
+</body>
 </html>

@@ -1,393 +1,76 @@
-let table = ``;
-let busList = [];
-let scheduleList = [];
-let reserveList = [];
-let usersList = [];
-
-let addButton = $("#add");
-let deleteButton = $("#delete");
-let editButton = $("#edit");
-
-let currentList = "busList";
-
-$(document).ready(function() {
-  loadData();
-
-  $("#searchBar").on("keyup", function() {
-    searchTable($(this).val());
-  });
-
-  addButton.on("click", function() {
-    if(currentList === "busList") addBus();
-    else if(currentList === "scheduleList") addSchedule();
-    else if(currentList === "reservationsList") addReservation();
-  });
-
-  editButton.on("click", function() {
-    if(currentList === "busList") editBus();
-    else if(currentList === "scheduleList") editSchedule();
-    else if(currentList === "reservationsList") editReservation();
-  });
-
-  deleteButton.on("click", function() {
-    if(currentList === "busList") DeleteBus();
-    else if(currentList === "scheduleList") DeleteSchedule();
-    else if(currentList === "reservationsList") DeleteReservation();
-  });
+/* Project author: Kondwani Phiri | Attribution marker: KP-HWL-2025 */
+var store={},view='buses',visibleRows=[],formAction='',refreshing=false,page=1,pageSize=25;
+var definitions={
+ buses:{title:'Fleet',id:'bus_id',action:'saveBus',columns:['bus_id','bus','number_plate','site','seats','status','odometer','service_due'],fields:[['bus','Vehicle name'],['number_plate','Number plate'],['site_id','Branch','sites'],['seats','Capacity','number'],['status','Status',['active','maintenance','retired']],['odometer','Odometer (km)','number'],['service_due','Next service','date']]},
+ sites:{title:'Branches',id:'site_id',action:'saveSite',columns:['site_id','name','city','address','phone','status'],fields:[['name','Branch name'],['city','City'],['address','Address'],['phone','Phone'],['status','Status',['active','inactive']]]},
+ drivers:{title:'Drivers',id:'driver_id',action:'saveDriver',columns:['driver_id','name','site','phone','licence','licence_expiry','status'],fields:[['name','Full name'],['site_id','Branch','sites'],['phone','Phone'],['licence','Licence number'],['licence_expiry','Licence expiry','date'],['status','Status',['active','inactive']]]},
+ schedule:{title:'Trips',id:'trip_id',action:'saveSchedule',columns:['trip_id','site','bus','driver','home','destination','date','departure_time','arrival_date','arrival_time','fare','available','status'],fields:[['bus_id','Vehicle','buses'],['driver_id','Driver','drivers'],['home','Origin'],['destination','Destination'],['date','Departure date','date'],['departure_time','Departure time','time'],['arrival_date','Arrival date','date'],['arrival_time','Arrival time','time'],['fare','Fare (ZMW)','decimal']]},
+ reservations:{title:'Bookings',id:'reservation_id',action:'addReservation',columns:['reservation_id','site','username','email','trip_id','home','destination','date','seat','amount'],fields:[['user_id','Customer','users'],['trip_id','Trip','schedule'],['seat','Seat','number']]},
+ maintenance:{title:'Maintenance',id:'maintenance_id',action:'saveMaintenance',columns:['maintenance_id','site','bus','number_plate','service_date','odometer','cost','notes'],fields:[['bus_id','Vehicle','buses'],['service_date','Service date','date'],['odometer','Odometer (km)','number'],['cost','Cost (ZMW)','decimal'],['service_due','Next service','date'],['notes','Work performed','textarea']]},
+ users:{title:'People & access',id:'id',action:'saveStaff',columns:['id','username','email','location','position','site'],fields:[['position','Role',['customer','manager','admin']],['site_id','Assigned branch','sites']]},
+ enquiries:{title:'Enquiries',id:'enquiry_id',action:'saveEnquiry',columns:['enquiry_id','site','name','email','phone','subject','message','status','created_at'],fields:[['status','Status',['new','in_progress','closed']]]},
+ audit:{title:'Activity',id:'audit_id',columns:['audit_id','username','action','details','created_at'],fields:[]}
+};
+var headings={bus_id:'Vehicle ID',site_id:'Branch ID',trip_id:'Trip ID',reservation_id:'Booking ID',driver_id:'Driver ID',service_due:'Service due',licence_expiry:'Licence expires',number_plate:'Plate',departure_time:'Departs',arrival_time:'Arrives',arrival_date:'Arrival date',home:'Origin',amount:'Value (ZMW)',fare:'Fare (ZMW)',cost:'Cost (ZMW)',position:'Role'};
+function label(key){return headings[key]||key.replace(/_/g,' ').replace(/^./,function(c){return c.toUpperCase();});}
+function notice(text){$('#message').text(text);}
+async function refresh(){
+ if(refreshing)return;refreshing=true;$('#refresh').prop('disabled',true);
+ try{
+  var keys=['sites','buses','drivers','schedule','reservations','maintenance','users','enquiries'];var actions=['getSites','getBus','getDrivers','getSchedule','getReservations','getMaintenance','getUsers','getEnquiries'];
+  if(BusApp.user.position==='admin'){keys.push('audit');actions.push('getAudit');}
+  var values=await Promise.all(actions.map(function(action){return BusApp.request(action);}));keys.forEach(function(key,i){store[key]=values[i].data;});
+  var select=$('#branch'),value=select.val();select.empty().append($('<option>').val('').text('All accessible branches'));store.sites.forEach(function(s){select.append($('<option>').val(s.site_id).text(s.name));});select.val(value||'');render();
+ }catch(e){notice(e.message);}finally{refreshing=false;$('#refresh').prop('disabled',false);}
+}
+function decorate(row){var r=Object.assign({},row);var site=(store.sites||[]).find(function(s){return s.site_id==r.site_id;});r.site=site?site.name:'';if(view==='schedule'){var bus=store.buses.find(function(b){return b.bus_id==r.bus_id;});var driver=store.drivers.find(function(d){return d.driver_id==r.driver_id;});r.bus=bus?bus.bus:'';r.driver=driver?driver.name:'Unassigned';r.available=JSON.parse(r.seats).length;}return r;}
+function render(){
+ var def=definitions[view],branch=view==='audit'?'':$('#branch').val(),search=$('#searchBar').val().toLowerCase();
+ visibleRows=(store[view]||[]).map(decorate).filter(function(r){return (!branch||(view==='sites'?r.site_id==branch:r.site_id==branch))&&Object.values(r).join(' ').toLowerCase().includes(search);});
+ $('#branch').prop('disabled',view==='audit');
+ $('#title').text(def.title);$('nav button').removeClass('active').filter('[data-view="'+view+'"]').addClass('active');
+ $('#add').toggle(!!def.action && view!=='users' && view!=='enquiries' && !(view==='sites'&&BusApp.user.position!=='admin'));
+ var head=$('<tr>');def.columns.forEach(function(k){head.append($('<th>').text(label(k)));});head.append($('<th>').text('Actions'));$('thead').empty().append(head);var body=$('tbody').empty();
+ var pages=Math.max(1,Math.ceil(visibleRows.length/pageSize));page=Math.min(page,pages);
+ visibleRows.slice((page-1)*pageSize,page*pageSize).forEach(function(r){var row=$('<tr>');def.columns.forEach(function(k){row.append($('<td>').text(r[k]===null?'—':r[k]));});var actions=$('<td>');
+  if(def.action && view!=='maintenance' && !(view==='sites'&&BusApp.user.position!=='admin'))actions.append($('<button>').text('Edit').on('click',function(){edit(r);}));
+  if(view==='schedule'){
+   if(['scheduled','departed'].includes(r.status))actions.append($('<button>').text(r.status==='scheduled'?'Mark departed':'Mark completed').on('click',function(){mutate('setTripStatus',{trip_id:r.trip_id,status:r.status==='scheduled'?'departed':'completed'},'Update this trip status?');}));
+   actions.append($('<button>').text('Manifest').on('click',function(){manifest(r);}));
+   if(r.status==='scheduled')actions.append($('<button>').text('Cancel trip').on('click',function(){mutate('cancelTrip',{trip_id:r.trip_id},'Cancel this trip? All bookings must be cancelled first.');}));
+  }
+  if(view==='reservations')actions.append($('<button>').text('Cancel booking').on('click',function(){mutate('deleteReservation',{reservation_id:r.reservation_id},'Cancel this booking and release the seat?');}));
+  if(view==='enquiries')row.find('td').eq(6).css({whiteSpace:'normal',minWidth:'260px',maxWidth:'420px'});row.append(actions);body.append(row);
+ });
+ if(!visibleRows.length)body.append($('<tr>').append($('<td>').attr('colspan',def.columns.length+1).text('No records found.')));
+ $('#paging').remove();var paging=$('<div id="paging" class="toolbar">');paging.append($('<button>').text('Previous').prop('disabled',page===1).on('click',function(){page--;render();}),$('<span>').text('Page '+page+' of '+pages+' · '+visibleRows.length+' records'),$('<button>').text('Next').prop('disabled',page===pages).on('click',function(){page++;render();}));$('.panel').append(paging);
+ var fleet=(store.buses||[]).filter(function(b){return !branch||b.site_id==branch;});var trips=(store.schedule||[]).filter(function(t){return (!branch||t.site_id==branch)&&t.status==='scheduled'&&new Date(t.date+'T'+t.departure_time+'+02:00')>new Date();});var bookings=(store.reservations||[]).filter(function(r){return !branch||r.site_id==branch;});
+ $('#metrics').empty();[['Active vehicles',fleet.filter(function(b){return b.status==='active';}).length],['Upcoming trips',trips.length],['Bookings',bookings.length],['Booking value (ZMW)',bookings.reduce(function(sum,r){return sum+Number(r.amount);},0).toFixed(2)]].forEach(function(m){$('#metrics').append($('<div class="metric">').append($('<span>').text(m[0]),$('<strong>').text(m[1])));});
+ $('#list-help').text(view==='buses'?'Vehicles with upcoming trips must be reassigned before changing capacity, branch or status.':view==='maintenance'?'Record completed work and the next service date. Vehicle status is managed separately in Fleet.':view==='reservations'?'Booking value records fares; payment collection is handled at the branch.':'Showing '+visibleRows.length+' records.');
+}
+function edit(record){
+ var def=definitions[view];formAction=record&&view==='reservations'?'editReservation':def.action;var form=$('#record-form')[0];form.reset();$('#fields').empty();$('#form-error').text('');$('#form-title').text((record?'Edit ':'Add ')+def.title);
+ $('<input type="hidden">').attr('name',def.id).val(record?record[def.id]:0).appendTo('#fields');
+ def.fields.forEach(function(field){var key=field[0],type=field[2]||'text',input;
+  if(Array.isArray(type)||['sites','buses','drivers','users','schedule'].includes(type)){
+   input=$('<select>').append($('<option>').val('').text('Choose…'));
+   if(Array.isArray(type))type.forEach(function(value){input.append($('<option>').val(value).text(value));});
+   else (store[type]||[]).filter(function(item){return !$('#branch').val()||type==='users'||item.site_id==$('#branch').val();}).forEach(function(item){var id=definitions[type].id;var text=type==='sites'?item.name:type==='buses'?item.number_plate+' — '+item.bus:type==='drivers'?item.name:type==='users'?item.username+' ('+item.email+')':item.trip_id+' | '+item.home+' ? '+item.destination+' | '+item.date;input.append($('<option>').val(item[id]).text(text));});
+  }else if(type==='textarea')input=$('<textarea rows="3" maxlength="1000">');
+  else input=$('<input>').attr('type',type==='decimal'?'number':type);
+  input.attr({name:key,id:'field-'+key,required:!(key==='service_due'&&view==='buses')&&!(view==='sites'&&['address','phone'].includes(key))});
+  if(type==='number'||type==='decimal')input.attr({min:['seats','seat'].includes(key)?1:0,step:type==='decimal'?'0.01':'1'});
+  var value=record?record[key]:(['odometer','fare','cost'].includes(key)?0:key==='status'?'active':key==='site_id'?$('#branch').val():'');
+  input.val(value==null?'':value);$('<label>').attr('for','field-'+key).text(field[1]).append(input).appendTo('#fields');
+ });
+ $('#editor')[0].showModal();
+}
+async function mutate(action,data,prompt){if(!confirm(prompt))return;try{var r=await BusApp.request(action,data);notice(r.message);await refresh();}catch(e){notice(e.message);}}
+function csvCell(value){return '"'+String(value==null?'':value).replace(/^[=+\-@\t\r]/,"'$&").replace(/"/g,'""')+'"';}
+function exportRows(rows,columns,name){var csv='\ufeff'+[columns.map(label)].concat(rows.map(function(r){return columns.map(function(k){return r[k];});})).map(function(row){return row.map(csvCell).join(',');}).join('\r\n');var url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));var a=document.createElement('a');a.href=url;a.download=name+'.csv';a.click();setTimeout(function(){URL.revokeObjectURL(url);},1000);}
+function manifest(trip){exportRows(store.reservations.filter(function(r){return r.trip_id==trip.trip_id;}).sort(function(a,b){return a.seat-b.seat;}),['reservation_id','username','email','seat','home','destination','date','amount'],'trip-'+trip.trip_id+'-manifest');}
+$(async function(){
+ try{var user=await BusApp.session(true,true);$('#operator').text(user.username+' · '+user.position);$('.admin-only').toggle(user.position==='admin');await refresh();}catch(e){notice(e.message);}
+ $('nav button').on('click',function(){view=$(this).data('view');page=1;$('#searchBar').val('');render();});$('#branch').on('change',function(){page=1;render();});$('#searchBar').on('input',function(){page=1;render();});$('#refresh').on('click',refresh);$('#add').on('click',function(){edit(null);});$('#close-editor').on('click',function(){$('#editor')[0].close();});$('#logout').on('click',function(){BusApp.logout();});$('#export').on('click',function(){exportRows(visibleRows,definitions[view].columns,view);});
+ $('#record-form').on('submit',async function(e){e.preventDefault();$('#save').prop('disabled',true);$('#form-error').text('');try{var r=await BusApp.request(formAction,Object.fromEntries(new FormData(this)));$('#editor')[0].close();notice(r.message);await refresh();}catch(err){$('#form-error').text(err.message);}finally{$('#save').prop('disabled',false);}});
 });
-
-function loadData() {
-  $.ajax({
-    url: 'http://localhost/BusReserve/transactions.php',
-    method: 'POST',
-    data: { action: 'getBus' }, 
-    dataType: 'json',
-    success: function(response) {
-        busList = response.data;
-        generateTable("busList");
-        $("#busListLink").on("click", function(){
-            generateTable("busList");
-            $("#add").show();
-        });
-    }
-  });
-
-  $.ajax({
-    url: 'http://localhost/BusReserve/transactions.php',
-    method: 'POST',
-    data: { action: 'getSchedule' }, 
-    dataType: 'json',
-    success: function(response) {
-        scheduleList = response.data;
-        $("#scheduleListLink").on("click", function(){
-            generateTable("scheduleList");
-            $("#add").show();
-        });
-    }
-  });
-
-  $.ajax({
-    url: 'http://localhost/BusReserve/transactions.php',
-    method: 'POST',
-    data: { action: 'getReservations' }, 
-    dataType: 'json',
-    success: function(response) {
-        reserveList = response.data;
-        $("#reservationsListLink").on("click", function(){
-            generateTable("reservationsList");
-            $("#add").hide();
-        });
-    }
-  });
-
-  $.ajax({
-    url: 'http://localhost/BusReserve/transactions.php',
-    method: 'POST',
-    data: { action: 'getUsers' }, 
-    dataType: 'json',
-    success: function(response) {
-        usersList = response.data;
-    }
-  });
-}
-
-function generateTable(type) {
-    currentList = type;
-    table = `<thead><tr>`;
-
-    switch(type){
-      case "busList":
-        $("#title").text("Bus List");
-        table += `
-          <th>Bus Id</th><th>Bus Name</th><th>Number Plate</th><th>Number of Seats</th><th>Location</th>
-        </tr></thead><tbody>`;
-
-        busList.forEach(function(bus) {
-          table += `
-            <tr>
-              <td>${bus.bus_id}</td>
-              <td>${bus.bus}</td>
-              <td>${bus.number_plate}</td>
-              <td>${bus.seats}</td>
-              <td>${bus.home}</td>
-            </tr>`;
-        });
-        break;
-
-      case "scheduleList":
-        $("#title").text("Schedule List");
-        table += `
-          <th>Trip ID</th><th>Date</th><th>Bus Name</th><th>Number Plate</th><th>Origin</th><th>Destination</th><th>Departure</th><th>Arrival</th><th>Seats</th>
-        </tr></thead><tbody>`;
-
-        scheduleList.forEach(function(schedule) {
-          let bus = busList.find(b => b.bus_id == schedule.bus_id) || {};
-          table += `
-            <tr>
-              <td>${schedule.trip_id}</td>
-              <td>${schedule.date}</td>
-              <td>${bus.bus || ""}</td>
-              <td>${bus.number_plate || ""}</td>
-              <td>${schedule.home}</td>
-              <td>${schedule.destination}</td>
-              <td>${schedule.departure_time}</td>
-              <td>${schedule.arrival_time}</td>
-              <td>${schedule.seats}</td>
-            </tr>`;
-        });
-        break;
-
-      case "reservationsList":
-        $("#title").text("Reservations List");
-        table += `
-          <th>Reservation ID</th><th>Trip ID</th><th>Date</th><th>Customer</th><th>Email</th><th>Origin</th><th>Destination</th><th>Seat</th>
-        </tr></thead><tbody>`;
-
-        reserveList.forEach(function(reserve) {
-
-          let schedule = scheduleList.find(s => s.trip_id == reserve.trip_id) || {};
-          let user = usersList.find(u => u.id == reserve.user_id) || {};
-          table += `
-            <tr>
-              <td>${reserve.reservation_id}</td>
-              <td>${reserve.trip_id}</td>
-              <td>${schedule.date || ""}</td>
-              <td>${user.username || ""}</td>
-              <td>${user.email || ""}</td>
-              <td>${schedule.home || ""}</td>
-              <td>${schedule.destination || ""}</td>
-              <td>${reserve.seat}</td>
-            </tr>`;
-        });
-        break;
-    }
-
-    table += `</tbody>`;
-    $("table").html(table);
-}
-
-// ========== SEARCH FUNCTION ==========
-function searchTable(query) {
-    query = query.toLowerCase();
-    $("tbody tr").each(function() {
-        let row = $(this).text().toLowerCase();
-        if(row.indexOf(query) > -1) {
-            $(this).show();
-        } else {
-            $(this).hide();
-        }
-    });
-}
-
-// ========== CRUD FUNCTIONS ==========
-
-function addBus() {
-    let busName = prompt("Enter Bus Name:");
-    let numberPlate = prompt("Enter Number Plate:");
-    let seats = prompt("Enter Number of Seats:");
-    let location = prompt("Enter Location:");
-
-    if(busName && numberPlate && seats && location){
-      $.post('http://localhost/BusReserve/transactions.php', {
-        action: 'addBus',
-        bus: busName,
-        numberPlate: numberPlate,
-        seats: seats,
-        home: location
-      }, function(response) {
-        alert(response.message);
-        loadData();
-      }, 'json');
-    }
-}
-
-function editBus() {
-    let busId = prompt("Enter Bus ID to edit:");
-    if(!busId) return;
-
-    let bus = busList.find(b => b.bus_id == busId);
-    if (!bus) {
-        alert("Bus not found!");
-        return;
-    }
-
-    let newName = prompt("Enter new Bus Name:", bus.bus);
-    let newPlate = prompt("Enter new Number Plate:", bus.number_plate);
-    let newSeats = prompt("Enter new Number of Seats:", bus.seats);
-    let newHome = prompt("Enter new Location:", bus.home);
-
-    $.post('http://localhost/BusReserve/transactions.php', {
-        action: 'editBus',
-        bus_id: busId,
-        bus: newName || bus.bus,
-        number_plate: newPlate || bus.number_plate,
-        seats: newSeats || bus.seats,
-        home: newHome || bus.home
-    }, function(response) {
-        alert(response.message);
-        loadData();
-    }, 'json');
-}
-
-
-function DeleteBus() {
-    let busId = prompt("Enter Bus ID to delete:");
-
-    if(busId){
-      $.post('http://localhost/BusReserve/transactions.php', {
-        action: 'deleteBus',
-        bus_id: busId
-      }, function(response) {
-        alert(response.message);
-        loadData();
-      }, 'json');
-    }
-}
-
-// --- Reservation Functions ---
-function addReservation() {
-    let tripId = prompt("Enter Trip ID:");
-    let userId = prompt("Enter Customer ID:");
-    let seat = prompt("Enter Seat Number:");
-
-    if(tripId && userId && seat){
-      $.post('http://localhost/BusReserve/transactions.php', {
-        action: 'addReservation',
-        trip_id: tripId,
-        bus_id: userId,
-        seat: seat
-      }, function(response) {
-        alert(response.message);
-        loadData();
-      }, 'json');
-    }
-}
-
-function editReservation() {
-    let reserveId = prompt("Enter Reservation ID to edit:");
-    if (!reserveId) return;
-
-    let reservation = reserveList.find(r => r.reservation_id == reserveId);
-    if (!reservation) {
-        alert("Reservation not found!");
-        return;
-    }
-
-    let newSeat = prompt("Enter new Seat:", reservation.seat);
-    let trip_id = prompt("Enter new trip_Id:", reservation.trip_id);
-
-    $.post('http://localhost/BusReserve/transactions.php', {
-        action: 'editReservation',
-        reservation_id: reserveId,
-        trip_id: trip_id || reservation.trip_idc,
-        seat: newSeat || reservation.seat
-    }, function(response) {
-        alert(response.message);
-        loadData();
-    }, 'json');
-}
-
-function DeleteReservation() {
-    let reserveId = prompt("Enter Reservation ID to delete:");
-
-    if(reserveId){
-      $.post('http://localhost/BusReserve/transactions.php', {
-        action: 'deleteReservation',
-        reserve_id: reserveId
-      }, function(response) {
-        alert(response.message);
-        loadData();
-      }, 'json');
-    }
-}
-
-// --- Schedule Functions ---
-function addSchedule() {
-    let busId = prompt("Enter Bus ID:");
-    if (!busId) return;
-
-    let bus = busList.find(b => b.bus_id == busId);
-    if (!bus) {
-        alert("Bus not found!");
-        return;
-    }
-
-    let date = prompt("Enter Date (YYYY-MM-DD):");
-    let home = prompt("Enter Origin:");
-    let destination = prompt("Enter Destination:");
-    let departure = prompt("Enter Departure Time (HH:MM):");
-    let arrival = prompt("Enter Arrival Time (HH:MM):");
-
-    if (date && home && destination && departure && arrival) {
-        // Use the seats count from the found bus
-        let seatsArray = [];
-        for (let i = 1; i <= parseInt(bus.seats); i++) {
-            seatsArray.push(i);
-        }
-
-        $.post('http://localhost/BusReserve/transactions.php', {
-            action: 'addSchedule',
-            bus_id: busId,
-            date: date,
-            home: home,
-            destination: destination,
-            departure_time: departure,
-            arrival_time: arrival,
-            seats: JSON.stringify(seatsArray) // send seats as JSON string
-        }, function(response) {
-            alert(response.message);
-            loadData();
-        }, 'json');
-    } else {
-        alert("All fields must be filled.");
-    }
-}
-
-
-
-function editSchedule() {
-    let tripId = prompt("Enter Trip ID to edit:");
-    if (!tripId) return;
-
-    let schedule = scheduleList.find(s => s.trip_id == tripId);
-    if (!schedule) {
-        alert("Schedule not found!");
-        return;
-    }
-
-    let newDate = prompt("Enter new Date (YYYY-MM-DD):", schedule.date);
-    let newHome = prompt("Enter new Origin:", schedule.home);
-    let newDestination = prompt("Enter new Destination:", schedule.destination);
-    let newDeparture = prompt("Enter new Departure Time (HH:MM):", schedule.departure_time);
-    let newArrival = prompt("Enter new Arrival Time (HH:MM):", schedule.arrival_time);
-    let newSeats = prompt("Enter new Number of Seats:", schedule.seats);
-
-    $.post('http://localhost/BusReserve/transactions.php', {
-        action: 'editSchedule',
-        trip_id: tripId,
-        date: newDate || schedule.date,
-        home: newHome || schedule.home,
-        destination: newDestination || schedule.destination,
-        departure_time: newDeparture || schedule.departure_time,
-        arrival_time: newArrival || schedule.arrival_time,
-        seats: newSeats || schedule.seats
-    }, function(response) {
-        alert(response.message);
-        loadData();
-    }, 'json');
-}
-
-
-function DeleteSchedule() {
-    let tripId = prompt("Enter Trip ID to delete:");
-
-    if(tripId){
-      $.post('http://localhost/BusReserve/transactions.php', {
-        action: 'deleteSchedule',
-        trip_id: tripId
-      }, function(response) {
-        alert(response.message);
-        loadData();
-      }, 'json');
-    }
-}

@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta name="author" content="Kondwani Phiri">
+<!-- Project author: Kondwani Phiri | Attribution marker: KP-HWL-2025 -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#711f2b">
+<meta name="description" content="Find bus departures, choose a seat and manage your journeys between Lusaka and the Copperbelt.">
+<title>Sign in | Hard Work Logistics</title>
+<link rel="stylesheet" href="style/customer.css">
+</head>
+<body>
+<main class="auth-layout" id="main">
+<section class="auth-story">
+<a class="brand" href="index.html">
+<span class="brand-symbol">HW</span>
+<span>HARD WORK<small>LOGISTICS & TRAVEL</small>
+</span>
+</a>
+<div>
+<h1>Bus reservations</h1>
+<p>Lusaka, Kitwe, Ndola and Chingola.</p>
+
+</div>
+
+</section>
+<section class="forms-section">
+<a class="quiet-link" href="index.html">Back to home</a>
+<h2>Your account</h2>
+<p class="muted">Sign in or create an account to search departures, reserve seats and manage your bookings.</p>
+
+<div id="auth-message" role="status" aria-live="polite">
+</div>
+<div class="forms">
+<div class="form-wrapper is-active">
+<button type="button" class="switcher switcher-login">Sign in</button>
+<form class="form form-login">
+<fieldset>
+<legend class="sr-only">Sign in to your account</legend>
+<label for="login-email">Email address</label>
+<input id="login-email" type="email" required autocomplete="username" placeholder="you@example.com">
+<label for="login-password">Password</label>
+<input id="login-password" type="password" required autocomplete="current-password" placeholder="Your password">
+</fieldset>
+<button type="submit" class="button primary btn-login">Sign in</button>
+<p class="caption">Need account help? Contact your branch administrator.</p>
+</form>
+</div>
+<div class="form-wrapper">
+<button type="button" class="switcher switcher-signup">Create an account</button>
+<form class="form form-signup">
+<fieldset>
+<legend class="sr-only">Create a customer account</legend>
+<label for="signup-username">Passenger name</label>
+<input id="signup-username" type="text" maxlength="100" required autocomplete="name" placeholder="Your full name">
+<label for="signup-email">Email address</label>
+<input id="signup-email" type="email" required maxlength="50" autocomplete="email" placeholder="you@example.com">
+<label for="signup-location">Home city</label>
+<input id="signup-location" list="locations" required autocomplete="address-level2" placeholder="Choose or enter your city">
+<datalist id="locations">
+<option value="Lusaka">
+<option value="Kitwe">
+<option value="Ndola">
+<option value="Chingola">
+</datalist>
+<div class="password-pair">
+<div>
+<label for="signup-password">Password</label>
+<input id="signup-password" type="password" minlength="10" maxlength="72" required autocomplete="new-password">
+</div>
+<div>
+<label for="signup-password-confirm">Confirm password</label>
+<input id="signup-password-confirm" type="password" minlength="10" maxlength="72" required autocomplete="new-password">
+</div>
+</div>
+<p class="caption">At least 10 characters. Your details are used for reservations and tickets.</p>
+</fieldset>
+<button type="submit" class="button primary btn-signup">Create account</button>
+</form>
+</div>
+</div>
+
+</section>
+</main><footer class="account-credit">Developed by Kondwani Phiri</footer>
+<script src="js/api.js">
+</script>
+<script src="js/auth.js">
+</script>
+</body>
+</html>

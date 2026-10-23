@@ -1,302 +1,138 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="style/index.css" />
-    <title>Hard Work Travels</title>
-  </head>
-  <body>
-    <section class="forms-section">
-      <h1 class="section-title">Hard Work Travels</h1>
-      <div class="forms">
-        <div class="form-wrapper is-active">
-          <button type="button" class="switcher switcher-login">
-            Login
-            <span class="underline"></span>
-          </button>
-          <form class="form form-login">
-            <fieldset>
-              <legend>Please, enter your email and password for login.</legend>
-              <div class="input-block">
-                <label for="login-email">E-mail</label>
-                <input id="login-email" type="email" required />
-              </div>
-              <div class="input-block">
-                <label for="login-password">Password</label>
-                <input id="login-password" type="password" required />
-              </div>
-            </fieldset>
-            <button type="submit" class="btn-login">Login</button>
-          </form>
-        </div>
-        <div class="form-wrapper">
-          <button type="button" class="switcher switcher-signup">
-            Sign Up
-            <span class="underline"></span>
-          </button>
-          <form class="form form-signup">
-            <fieldset>
-              <legend>
-                Please, enter your email, password and password confirmation for
-                sign up.
-              </legend>
-              <div class="input-block">
-                <label for="signup-email">E-mail</label>
-                <input id="signup-email" type="email" required />
-              </div>
-              <div class="input-block">
-                <label for="signup-username">Username</label>
-                <input
-                  id="signup-username"
-                  name="signup-location"
-                  type="text"
-                  required
-                />
-              </div>
-              <div class="input-block">
-                <label for="signup-location">location</label>
-                <input
-                  list="locations"
-                  id="signup-location"
-                  type="text"
-                  required
-                />
-                <datalist id="locations">
-                  <option value="Kitwe">Kitwe</option>
-                  <option value="Chingola">Chingola</option>
-                  <option value="Ndola">Ndola</option>
-                  <option value="Lusaka">Lusaka</option>
-                </datalist>
-              </div>
-              <div class="input-block">
-                <label for="signup-password">Password</label>
-                <input id="signup-password" type="password" required />
-              </div>
-              <div class="input-block">
-                <label for="signup-password-confirm">Confirm password</label>
-                <input id="signup-password-confirm" type="password" required />
-              </div>
-            </fieldset>
-            <button type="submit" class="btn-signup">Continue</button>
-          </form>
-        </div>
-      </div>
-    </section>
+<head>
+<meta name="author" content="Kondwani Phiri">
+<!-- Project author: Kondwani Phiri | Attribution marker: KP-HWL-2025 -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#711f2b">
+<meta name="description" content="Find bus departures, choose a seat and manage your journeys between Lusaka and the Copperbelt.">
+<title>Home | Hard Work Logistics</title>
+<link rel="stylesheet" href="style/customer.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
 
-    <script>
-      const switchers = [...document.querySelectorAll(".switcher")];
+<header class="site-header">
+<a class="brand" href="index.html">
+<span class="brand-symbol">HW</span>
+<span>HARD WORK<small>LOGISTICS & TRAVEL</small>
+</span>
+</a>
+<nav aria-label="Main navigation">
+<ul id="links">
+<li>
+<a aria-current="page" href="index.html">Home</a>
+</li>
+<li data-member hidden>
+<a href="reserve.html">Find a trip</a>
+</li>
+<li data-member hidden>
+<button id="notifications" type="button">My bookings <span id="booking-count" class="count">0</span>
+</button>
+</li>
+<li><a href="#about">About us</a></li>
+<li><a href="#locations">Locations</a></li>
+<li>
+<a href="#contact">Branches & contact</a>
+</li>
+</ul>
+</nav>
+<div class="guest-menu" data-guest><a href="account.html">Sign in</a><a class="button primary" href="account.html?mode=signup">Sign up</a></div>
+<div class="account-menu" data-member hidden>
+<span class="avatar" aria-hidden="true">●</span>
+<span id="username">Your account</span>
+<a href="index.html" id="logout">Sign out</a>
+</div>
+</header>
+<main id="main">
+<section class="hero wrap">
+<div class="hero-copy">
 
-      switchers.forEach((item) => {
-        item.addEventListener("click", function () {
-          switchers.forEach((item) =>
-            item.parentElement.classList.remove("is-active")
-          );
-          this.parentElement.classList.add("is-active");
-        });
-      });
+<h1>Bus travel across Zambia</h1>
+<p>Hard Work Logistics connects Lusaka, Kitwe, Ndola and Chingola for work, family visits and everyday travel.</p>
+<p>Our local branches help you plan your journey between the capital and the Copperbelt.</p>
+<div class="hero-actions" data-guest><a class="button primary" href="account.html?mode=signup">Create an account</a><a class="quiet-link" href="#about">About our service</a></div>
+<div class="hero-actions" data-member hidden><a class="button primary" href="reserve.html">Find a trip</a></div>
 
-      // Email validation function
-      function isValidEmail(email) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
-      }
 
-      // Password strength validation
-      function isStrongPassword(password) {
-        return password.length >= 6;
-      }
+</div>
+<div class="hero-image">
+<img src="img/img1.jpeg" alt="A long-distance coach on the road at sunset" fetchpriority="high">
 
-      // Show error message
-      function showError(message) {
-        const errorDiv = document.createElement("div");
-        errorDiv.className = "error-message";
-        errorDiv.textContent = message;
-        errorDiv.style.cssText =
-          "background-color: #ffebee; color: #c62828; padding: 10px; margin: 10px 0; border-radius: 5px; text-align: center;";
+</div>
+</section>
+<section data-member hidden class="wrap quick-search" aria-label="Quick trip search">
+<div class="search-intro">
+<h2>Search trips</h2>
+</div>
+<form id="quick-search">
+<label>Leaving from<select id="quick-origin">
+<option value="">Any origin</option>
+</select>
+</label>
+<span class="search-arrow" aria-hidden="true">→</span>
+<label>Going to<select id="quick-destination">
+<option value="">Any destination</option>
+</select>
+</label>
+<label>Travel date<input type="date" id="quick-date">
+</label>
+<button class="button primary">Search trips <span>↗</span>
+</button>
+</form>
+</section>
 
-        const formsSection = document.querySelector(".forms-section");
-        const existingError = document.querySelector(".error-message");
-        if (existingError) {
-          existingError.remove();
-        }
-        formsSection.insertBefore(errorDiv, formsSection.firstChild);
+<section class="wrap section-block" id="popular-routes-section">
+<div class="section-heading">
+<div>
+<h2>Popular routes</h2>
+</div>
+<a class="quiet-link" href="account.html?next=reserve.html" data-guest>Sign in to book</a><a class="quiet-link" href="reserve.html" data-member hidden>View departures</a>
+</div>
+<div id="popular-routes" class="route-grid">
+<p class="empty-state">Loading available routes…</p>
+</div>
 
-        setTimeout(() => errorDiv.remove(), 5000);
-      }
+</section>
 
-      // Show success message
-      function showSuccess(message) {
-        const successDiv = document.createElement("div");
-        successDiv.className = "success-message";
-        successDiv.textContent = message;
-        successDiv.style.cssText =
-          "background-color: #e8f5e9; color: #2e7d32; padding: 10px; margin: 10px 0; border-radius: 5px; text-align: center;";
+<section class="wrap section-block company-details" id="about"><div><h2>About Hard Work Logistics</h2><p>Our service links the Copperbelt cities of Kitwe, Ndola and Chingola with Lusaka. With branches in these centres, we support local commuters, business travellers and passengers visiting family.</p><p>Visit a branch for travel information, boarding arrangements and help with your reservation. Once you create an account, you can check listed departures, choose a seat and keep your tickets in one place.</p></div><img src="img/img3.webp" alt="Map of Zambia in the national flag colours" class="zambia-map" loading="lazy"></section><section class="wrap section-block" id="locations"><div class="section-heading"><h2>Where we travel</h2></div><div class="city-grid"><article><h3>Kitwe</h3><p>Our Copperbelt base connects passengers to nearby towns and longer journeys to Lusaka.</p><p class="caption">Kitwe Central Bus Station, Freedom Avenue</p></article><article><h3>Ndola</h3><p>Connections within the Copperbelt and onward travel between the region and the capital.</p><p class="caption">Ndola Bus Terminal, Broadway</p></article><article><h3>Chingola</h3><p>Serving the western Copperbelt with links to Kitwe, Ndola and Lusaka.</p><p class="caption">Chingola Bus Station, Independence Way</p></article><article><h3>Lusaka</h3><p>Our capital-city branch links Inter-City travellers with destinations across the Copperbelt.</p><p class="caption">Inter-City Bus Terminal, Lumumba Road</p></article></div></section><section class="wrap account-invitation" data-guest><div><h2>Book and manage your journeys online</h2><p>Create an account to search departures, reserve a numbered seat, print tickets and manage your bookings.</p></div><a class="button primary" href="account.html?mode=signup">Sign up</a></section>
+<section class="wrap section-block" id="booking-guide"><h2>How to book</h2><ol class="booking-guide"><li><strong>Create an account</strong><span>Sign up or sign in.</span></li><li><strong>Choose a trip and seat</strong><span>Select a departure and reserve your seat.</span></li><li><strong>Confirm payment at the branch</strong><span>Bring your reservation and arrive 30 minutes early.</span></li></ol></section><section class="wrap section-block simple-faq" id="travel-guide"><h2>Travel questions</h2><details><summary>How much luggage can I bring?</summary><p>Confirm luggage limits and any oversized items with your departure branch before travelling.</p></details><details><summary>Can I cancel my booking?</summary><p>Cancel through My bookings before the scheduled departure. Discuss any payment or refund arrangements with the branch.</p></details><details><summary>How do I pay?</summary><p>Your online reservation holds a seat. Confirm the accepted payment method and pay at the branch.</p></details><details><summary>What do I need for boarding?</summary><p>Bring your reservation number or printed ticket and arrive 30 minutes early. Confirm any identification or assistance requirements with your branch.</p></details></section>
+<section class="wrap section-block" id="contact"><div class="section-heading"><h2>Contact us</h2></div><div class="contact-layout"><div class="contact-details"><h3>Customer support</h3><p>For reservations, boarding, luggage or assistance, call us or send an enquiry.</p><dl class="contact-list"><div><dt>Telephone</dt><dd><a href="tel:+260211234567">+260 211 234 567</a></dd></div><div><dt>Email</dt><dd><a href="mailto:info@hardworklogistics.co.zm">info@hardworklogistics.co.zm</a></dd></div><div><dt>Kitwe branch</dt><dd>Kitwe Central Bus Station<br>Freedom Avenue, Kitwe, Zambia</dd></div></dl><h3>Follow us</h3><nav class="social-links" aria-label="Social media"><a href="https://facebook.com/hardworklogistics" target="_blank" rel="noopener noreferrer">Facebook</a><a href="https://instagram.com/hardworklogistics" target="_blank" rel="noopener noreferrer">Instagram</a><a href="https://linkedin.com/company/hardworklogistics" target="_blank" rel="noopener noreferrer">LinkedIn</a></nav><div class="kitwe-map"><iframe title="Google Maps showing Kitwe city centre, Zambia" src="https://maps.google.com/maps?q=Kitwe%2C%20Zambia&amp;z=13&amp;output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe><a href="https://www.google.com/maps/search/?api=1&amp;query=Kitwe%2C%20Zambia" target="_blank" rel="noopener noreferrer">Open Kitwe in Google Maps</a><p class="caption">Map shows central Kitwe. Confirm your boarding point with the branch.</p></div></div><form id="contact-form" class="contact-form"><h3>Send an enquiry</h3><div class="contact-form-grid"><label>Your name<input name="name" id="contact-name" required maxlength="100" autocomplete="name"></label><label>Email address<input name="email" id="contact-email" type="email" required maxlength="100" autocomplete="email"></label><label>Phone number <span class="muted">(optional)</span><input name="phone" type="tel" maxlength="40" autocomplete="tel"></label><label>Branch<select name="site_id" id="contact-site"><option value="">General enquiry</option></select></label></div><label>Subject<input name="subject" required maxlength="150" placeholder="How can we help?"></label><label>Message<textarea name="message" required minlength="20" maxlength="4000" rows="6" placeholder="Tell us about your enquiry."></textarea></label><div class="contact-honeypot" aria-hidden="true"><label>Website<input name="website" tabindex="-1" autocomplete="off"></label></div><p class="caption">Your contact details will be used to respond to your enquiry.</p><button type="submit" class="button primary" id="contact-submit" disabled>Send enquiry</button><p id="contact-status" role="status" aria-live="polite"></p></form></div><div class="section-heading branch-heading"><h2>Our branches</h2></div><div id="branch-directory" class="branch-grid"><p class="empty-state">Loading branch details…</p></div></section>
 
-        const formsSection = document.querySelector(".forms-section");
-        const existingSuccess = document.querySelector(".success-message");
-        if (existingSuccess) {
-          existingSuccess.remove();
-        }
-        formsSection.insertBefore(successDiv, formsSection.firstChild);
-
-        setTimeout(() => successDiv.remove(), 5000);
-      }
-
-      document.addEventListener("DOMContentLoaded", function () {
-        const loginForm = document.querySelector(".form-login");
-        const signupForm = document.querySelector(".form-signup");
-
-        signupForm.addEventListener("submit", function (e) {
-          e.preventDefault();
-
-          const email = document.getElementById("signup-email").value.trim();
-          const username = document
-            .getElementById("signup-username")
-            .value.trim();
-          const password = document.getElementById("signup-password").value;
-          const passwordConfirm = document.getElementById(
-            "signup-password-confirm"
-          ).value;
-          const location = document.getElementById("signup-location")
-            ? document.getElementById("signup-location").value.trim()
-            : "";
-
-          // Validation
-          if (
-            !email ||
-            !username ||
-            !password ||
-            !passwordConfirm ||
-            !location
-          ) {
-            showError("All fields are required!");
-            return;
-          }
-
-          if (!isValidEmail(email)) {
-            showError("Please enter a valid email address!");
-            return;
-          }
-
-          if (!isStrongPassword(password)) {
-            showError("Password must be at least 6 characters long!");
-            return;
-          }
-
-          if (password !== passwordConfirm) {
-            showError("Passwords do not match!");
-            return;
-          }
-
-          // Show loading state
-          const submitBtn = this.querySelector('button[type="submit"]');
-          const originalText = submitBtn.textContent;
-          submitBtn.textContent = "Creating account...";
-          submitBtn.disabled = true;
-
-          fetch("http://localhost/BusReserve/transactions.php", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/x-www-form-urlencoded",
-            },
-            body: `action=register&email=${encodeURIComponent(
-              email
-            )}&username=${encodeURIComponent(
-              username
-            )}&password=${encodeURIComponent(
-              password
-            )}&location=${encodeURIComponent(location)}`,
-          })
-            .then((response) => response.json())
-            .then((data) => {
-              submitBtn.textContent = originalText;
-              submitBtn.disabled = false;
-
-              if (data.register) {
-                showSuccess(data.message);
-                setTimeout(() => {
-                  window.location.href = "index.html";
-                }, 1500);
-              } else {
-                showError("Registration failed: " + data.message);
-              }
-            })
-            .catch((error) => {
-              submitBtn.textContent = originalText;
-              submitBtn.disabled = false;
-              console.error("Error:", error);
-              showError(
-                "Connection error. Please check if the server is running."
-              );
-            });
-        });
-
-        loginForm.addEventListener("submit", function (e) {
-          e.preventDefault();
-
-          const email = document.getElementById("login-email").value.trim();
-          const password = document.getElementById("login-password").value;
-
-          // Validation
-          if (!email || !password) {
-            showError("Both email and password are required!");
-            return;
-          }
-
-          if (!isValidEmail(email)) {
-            showError("Please enter a valid email address!");
-            return;
-          }
-
-          // Show loading state
-          const submitBtn = this.querySelector('button[type="submit"]');
-          const originalText = submitBtn.textContent;
-          submitBtn.textContent = "Logging in...";
-          submitBtn.disabled = true;
-
-          fetch("http://localhost/BusReserve/transactions.php", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/x-www-form-urlencoded",
-            },
-            body: `action=login&email=${encodeURIComponent(
-              email
-            )}&password=${encodeURIComponent(password)}`,
-          })
-            .then((response) => response.json())
-            .then((data) => {
-              submitBtn.textContent = originalText;
-              submitBtn.disabled = false;
-
-              console.log(data);
-              if (data.login) {
-                // Save username and ID to local storage
-                localStorage.setItem("username", data.username);
-                localStorage.setItem("userId", data.id);
-
-                showSuccess(data.message);
-                setTimeout(() => {
-                  if (data.position === "admin") {
-                    window.location.href = "admin.dashboard.html";
-                  } else {
-                    window.location.href = "home.html";
-                  }
-                }, 1000);
-              } else {
-                showError("Login failed: " + data.message);
-              }
-            })
-            .catch((error) => {
-              submitBtn.textContent = originalText;
-              submitBtn.disabled = false;
-              console.error("Error:", error);
-              showError(
-                "Connection error. Please check if the server is running."
-              );
-            });
-        });
-      });
-    </script>
-  </body>
+</main>
+<footer class="site-footer"><div class="simple-footer"><strong>Hard Work Logistics</strong><nav aria-label="Footer"><a href="#about">About us</a><a href="account.html?mode=signup" data-guest>Sign up</a><a href="reserve.html" data-member hidden>Find a trip</a><a href="#contact">Contact</a></nav><span>&copy; 2025–2026 Hard Work Logistics</span><span class="author-credit">Developed by Kondwani Phiri</span></div></footer>
+<dialog id="bookings-dialog" class="wide-dialog">
+<div class="dialog-heading">
+<div>
+<h2>My bookings</h2>
+</div>
+<button class="icon-button" type="button" data-close="bookings-dialog" aria-label="Close bookings">×</button>
+</div>
+<div id="notificationPane">
+</div>
+</dialog>
+<dialog id="password-dialog">
+<form id="password-form">
+<div class="dialog-heading">
+<h2>Change password</h2>
+<button type="button" class="icon-button" data-close="password-dialog" aria-label="Close password form">×</button>
+</div>
+<label>Current password<input name="current_password" type="password" required autocomplete="current-password">
+</label>
+<label>New password<input name="new_password" type="password" minlength="10" maxlength="72" required autocomplete="new-password">
+</label>
+<p class="muted">Use at least 10 characters.</p>
+<button class="button primary">Save password</button>
+</form>
+</dialog>
+<script src="js/jquery-3.6.0.min.js">
+</script>
+<script src="js/api.js">
+</script>
+<script src="js/utils.js">
+</script>
+<script src="js/script.js">
+</script>
+</body>
 </html>

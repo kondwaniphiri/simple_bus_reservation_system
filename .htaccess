@@ -1,0 +1,7 @@
+Options -Indexes
+RewriteEngine On
+RewriteRule "(^|/)\." - [F,L]
+RewriteRule "^tests(?:/|$)" - [F,L]
+<FilesMatch "(?i)(\.(sql|log|md|ini|env)$|^\.)">
+    Require all denied
+</FilesMatch>

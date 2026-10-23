@@ -1,206 +1,755 @@
--- phpMyAdmin SQL Dump
--- version 5.2.1
--- https://www.phpmyadmin.net/
---
--- Host: localhost
--- Generation Time: Apr 29, 2025 at 09:54 AM
--- Server version: 8.4.0
--- PHP Version: 8.3.8
-
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+-- Hard Work Logistics: current database snapshot
+-- Project author: Kondwani Phiri | Attribution marker: KP-HWL-2025
+-- Generated: 2026-10-23 09:37:53 CAT
+-- Import into an EMPTY MySQL 8 database. Existing tables are not overwritten.
+-- Dates are preserved exactly, including history anchored to 2025-04-29.
+-- Passwords remain hashed; private .env credentials are not included.
+SET NAMES utf8mb4;
+SET time_zone='+02:00';
+SET @OLD_FK=@@FOREIGN_KEY_CHECKS;
+SET FOREIGN_KEY_CHECKS=0;
 START TRANSACTION;
-SET time_zone = "+00:00";
 
+CREATE TABLE `sites` (
+  `site_id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `city` varchar(100) NOT NULL,
+  `address` varchar(255) NOT NULL DEFAULT '',
+  `phone` varchar(40) NOT NULL DEFAULT '',
+  `status` varchar(20) NOT NULL DEFAULT 'active',
+  PRIMARY KEY (`site_id`),
+  UNIQUE KEY `name` (`name`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
-
---
--- Database: `bus_ticket`
---
-
--- --------------------------------------------------------
-
---
--- Table structure for table `buses`
---
-
-CREATE TABLE `buses` (
-  `bus_id` int NOT NULL,
-  `bus` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `number_plate` text NOT NULL,
-  `seats` int NOT NULL,
-  `home` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Dumping data for table `buses`
---
-
-INSERT INTO `buses` (`bus_id`, `bus`, `number_plate`, `seats`, `home`) VALUES
-(1, 'Marco Polo', 'ADE 3442', 10, 'Kitwe'),
-(2, 'Scarnia', 'AOB 4470', 10, 'Ndola'),
-(3, 'Rosa', 'ACK 9989', 10, 'Chingola'),
-(4, 'Scarnia', 'ADE 2424', 10, 'Kitwe'),
-(5, 'Mercedes Bus', 'ACK 2945', 7, 'Ndola'),
-(6, 'Tata Bus', 'BCE 1987', 12, 'Lusaka');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `login`
---
+INSERT INTO `sites` (`site_id`,`name`,`city`,`address`,`phone`,`status`) VALUES ('1','Head Office','Lusaka','','','active');
+INSERT INTO `sites` (`site_id`,`name`,`city`,`address`,`phone`,`status`) VALUES ('2','Lusaka Travel Centre','Lusaka','Inter-City Bus Terminal, Lumumba Road','+260 211 567 890','active');
+INSERT INTO `sites` (`site_id`,`name`,`city`,`address`,`phone`,`status`) VALUES ('3','Kitwe Travel Centre','Kitwe','Kitwe Central Bus Station, Freedom Avenue','+260 211 234 567','active');
+INSERT INTO `sites` (`site_id`,`name`,`city`,`address`,`phone`,`status`) VALUES ('4','Ndola Travel Centre','Ndola','Ndola Bus Terminal, Broadway','+260 212 345 678','active');
+INSERT INTO `sites` (`site_id`,`name`,`city`,`address`,`phone`,`status`) VALUES ('5','Chingola Travel Centre','Chingola','Chingola Bus Station, Independence Way','+260 212 456 789','active');
 
 CREATE TABLE `login` (
-  `id` int NOT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
   `email` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `username` text NOT NULL,
   `password` text NOT NULL,
   `location` text NOT NULL,
-  `position` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `position` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
+  `site_id` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_email` (`email`),
+  KEY `fk_login_site` (`site_id`),
+  CONSTRAINT `fk_login_site` FOREIGN KEY (`site_id`) REFERENCES `sites` (`site_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
---
--- Dumping data for table `login`
---
+INSERT INTO `login` (`id`,`email`,`username`,`password`,`location`,`position`,`site_id`) VALUES ('1','admin@admin','admin','$2y$12$UgUgoI31g.j.QmKJGZRUEO/FbOJfGfdxLOXvub8nxTiU.9/2JYPuC','Kitwe','admin',NULL);
+INSERT INTO `login` (`id`,`email`,`username`,`password`,`location`,`position`,`site_id`) VALUES ('2','peter@gmail.com','peter','$2y$10$P9SQJSg5sry5MAO3s0xWN.ZNAZDNEmUzA7bX2LT1FGvYdqTTKkJvq','Chingola',NULL,NULL);
+INSERT INTO `login` (`id`,`email`,`username`,`password`,`location`,`position`,`site_id`) VALUES ('3','jacob@gmail.com','jacob','$2y$10$UCyqUhWkIQwbRyb6x7XSZ.CC4kLuQUPVk0aP0mL1gkAUW7t4mv9.S','Kitwe',NULL,NULL);
+INSERT INTO `login` (`id`,`email`,`username`,`password`,`location`,`position`,`site_id`) VALUES ('5','john@gmail.com','john','$2y$10$d30dNxw2m3Y25xwAYsJicev6NRV5jqRIPIkyLX7RlPMgm7UjcgxRa','Lusaka',NULL,NULL);
+INSERT INTO `login` (`id`,`email`,`username`,`password`,`location`,`position`,`site_id`) VALUES ('7','paul@gmail.com','paul','$2y$10$oTa1upWTffwWNq0YmH13Mu0aqllQhykx5QLWrySOFfvT80smLCx4C','Kitwe',NULL,NULL);
+INSERT INTO `login` (`id`,`email`,`username`,`password`,`location`,`position`,`site_id`) VALUES ('8','jane@gmail.com','jane','$2y$10$zPxqD.45KRAqUmL6IRP5DeECwIQtT/boGCUT5HfndAS5azp6O9k3y','Chingola',NULL,NULL);
+INSERT INTO `login` (`id`,`email`,`username`,`password`,`location`,`position`,`site_id`) VALUES ('9','nancy@gmail.com','nancy','$2y$10$tfyoOjmz/N.sWzgfmBH9FuNRM5FLAd3wxIUg0N4AVtiUs4Erzc2ou','Lusaka',NULL,NULL);
+INSERT INTO `login` (`id`,`email`,`username`,`password`,`location`,`position`,`site_id`) VALUES ('10','mary@gmail.com','Mary','$2y$10$tXzY5xrVUkWMh7g1mW7gQen0w3OpLgNpBeK4fqcSBgUa2ITzHiyTS','Chingola',NULL,NULL);
+INSERT INTO `login` (`id`,`email`,`username`,`password`,`location`,`position`,`site_id`) VALUES ('15','lusaka.manager@hardwork.local','Lusaka Manager','$2y$12$Dknm0HM2dG/97/dZQ4rhtOUDV0/3oYeWf.oamjZigaUZmPI0utN3y','Lusaka','manager','2');
+INSERT INTO `login` (`id`,`email`,`username`,`password`,`location`,`position`,`site_id`) VALUES ('16','kitwe.manager@hardwork.local','Kitwe Manager','$2y$12$fE7bYdM4wK27TiSsraSdxeGZK3hsgqBsjVCRzJlHjT7nsnyBJZCwu','Kitwe','manager','3');
+INSERT INTO `login` (`id`,`email`,`username`,`password`,`location`,`position`,`site_id`) VALUES ('17','ndola.manager@hardwork.local','Ndola Manager','$2y$12$hZwrqAvtdprH0TPDMh9SpuXkcZwmMkisSCw0mG.rbQmyZeVXnMod.','Ndola','manager','4');
+INSERT INTO `login` (`id`,`email`,`username`,`password`,`location`,`position`,`site_id`) VALUES ('18','chingola.manager@hardwork.local','Chingola Manager','$2y$12$Qxv.CYQ4FVGms..YbEIgSeszYCiJN9irCxOr1yBkvvhVP.s2.439u','Chingola','manager','5');
+INSERT INTO `login` (`id`,`email`,`username`,`password`,`location`,`position`,`site_id`) VALUES ('19','passenger1@hardwork.local','Chipo Banda','$2y$12$Eth3jkaKHe5zZaPXUAmEZeo1JruBGGFW2gYu4WlnfxngepCd9RUHa','Lusaka','customer',NULL);
+INSERT INTO `login` (`id`,`email`,`username`,`password`,`location`,`position`,`site_id`) VALUES ('20','passenger2@hardwork.local','Mwewa Phiri','$2y$12$PAyfXz9r7ecUP5qBCcbT0.DLkwh1UdxXadRhioCrxzgdfXdAqXY9C','Kitwe','customer',NULL);
+INSERT INTO `login` (`id`,`email`,`username`,`password`,`location`,`position`,`site_id`) VALUES ('21','passenger3@hardwork.local','Thandiwe Zulu','$2y$12$4cqjM0Fr8IOYwrcLNql.uOazT3r8MhRPP/ahu9WvhTG5KCIirk06S','Ndola','customer',NULL);
+INSERT INTO `login` (`id`,`email`,`username`,`password`,`location`,`position`,`site_id`) VALUES ('22','passenger4@hardwork.local','Brian Mwansa','$2y$12$zPAdI0/vZJ.ecYDCJ2CP7.rZCydAWf/pUUn3oMHJQdt3BsY.eWzPC','Chingola','customer',NULL);
+INSERT INTO `login` (`id`,`email`,`username`,`password`,`location`,`position`,`site_id`) VALUES ('23','passenger5@hardwork.local','Natasha Tembo','$2y$12$Im1FbhFftqQhP8mGfEKnCeknQwCvlaBbnDmWEcpZKuIwq84Vew8pK','Lusaka','customer',NULL);
+INSERT INTO `login` (`id`,`email`,`username`,`password`,`location`,`position`,`site_id`) VALUES ('24','passenger6@hardwork.local','Kelvin Chanda','$2y$12$12g1YWt5ikXeLawa8gQML.zbwVm0jve6pQJuJa4NVRSwXDFmk2EkS','Kitwe','customer',NULL);
+INSERT INTO `login` (`id`,`email`,`username`,`password`,`location`,`position`,`site_id`) VALUES ('25','passenger7@hardwork.local','Luyando Mumba','$2y$12$aKo14PZtBHdC5XY7TFnYyOQpo1sL6FDGe75p0NX/g/38NypB8E3Hi','Ndola','customer',NULL);
+INSERT INTO `login` (`id`,`email`,`username`,`password`,`location`,`position`,`site_id`) VALUES ('26','passenger8@hardwork.local','Mutinta Bwalya','$2y$12$2wZfAs3pwpRds3V8kKBFHOiJ8iigTlp1kWZzUqbu9ubzbCLyFRy9a','Chingola','customer',NULL);
+INSERT INTO `login` (`id`,`email`,`username`,`password`,`location`,`position`,`site_id`) VALUES ('27','operations@hardwork.local','Operations Administrator','$2y$12$Ma03mRNJig2cnozjL7pbXO8CCKAyabQojwyBjx2htvcyBYy3XAdxa','Lusaka','admin','2');
+INSERT INTO `login` (`id`,`email`,`username`,`password`,`location`,`position`,`site_id`) VALUES ('28','customer@hardwork.local','Customer Account','$2y$12$tVxBvxqDrC0pP4CSs/MaBeLAvn9tkZgwN.0SsvVK5vAeApAJOEvEK','Lusaka','customer',NULL);
 
-INSERT INTO `login` (`id`, `email`, `username`, `password`, `location`, `position`) VALUES
-(1, 'admin@admin', 'admin', '$2y$10$i3Z/x4EHnqk2GA0DqB6n0O15u2yDAUCpEIClO6iniVV5nXs501akm', 'Kitwe', 'admin'),
-(2, 'peter@gmail.com', 'peter', '$2y$10$P9SQJSg5sry5MAO3s0xWN.ZNAZDNEmUzA7bX2LT1FGvYdqTTKkJvq', 'Chingola', NULL),
-(3, 'jacob@gmail.com', 'jacob', '$2y$10$UCyqUhWkIQwbRyb6x7XSZ.CC4kLuQUPVk0aP0mL1gkAUW7t4mv9.S', 'Kitwe', NULL),
-(5, 'john@gmail.com', 'john', '$2y$10$d30dNxw2m3Y25xwAYsJicev6NRV5jqRIPIkyLX7RlPMgm7UjcgxRa', 'Lusaka', NULL),
-(7, 'paul@gmail.com', 'paul', '$2y$10$oTa1upWTffwWNq0YmH13Mu0aqllQhykx5QLWrySOFfvT80smLCx4C', 'Kitwe', NULL),
-(8, 'jane@gmail.com', 'jane', '$2y$10$zPxqD.45KRAqUmL6IRP5DeECwIQtT/boGCUT5HfndAS5azp6O9k3y', 'Chingola', NULL),
-(9, 'nancy@gmail.com', 'nancy', '$2y$10$tfyoOjmz/N.sWzgfmBH9FuNRM5FLAd3wxIUg0N4AVtiUs4Erzc2ou', 'Lusaka', NULL),
-(10, 'mary@gmail.com', 'Mary', '$2y$10$tXzY5xrVUkWMh7g1mW7gQen0w3OpLgNpBeK4fqcSBgUa2ITzHiyTS', 'Chingola', NULL);
+CREATE TABLE `buses` (
+  `bus_id` int NOT NULL AUTO_INCREMENT,
+  `bus` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `number_plate` text NOT NULL,
+  `seats` int NOT NULL,
+  `home` text NOT NULL,
+  `site_id` int DEFAULT NULL,
+  `status` varchar(20) NOT NULL DEFAULT 'active',
+  `odometer` int NOT NULL DEFAULT '0',
+  `service_due` date DEFAULT NULL,
+  PRIMARY KEY (`bus_id`),
+  UNIQUE KEY `uq_plate` (`number_plate`(100)),
+  KEY `fk_bus_site` (`site_id`),
+  CONSTRAINT `fk_bus_site` FOREIGN KEY (`site_id`) REFERENCES `sites` (`site_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- --------------------------------------------------------
+INSERT INTO `buses` (`bus_id`,`bus`,`number_plate`,`seats`,`home`,`site_id`,`status`,`odometer`,`service_due`) VALUES ('1','Marco Polo','ADE 3442','10','Kitwe','1','active','0',NULL);
+INSERT INTO `buses` (`bus_id`,`bus`,`number_plate`,`seats`,`home`,`site_id`,`status`,`odometer`,`service_due`) VALUES ('2','Scarnia','AOB 4470','10','Ndola','1','active','0',NULL);
+INSERT INTO `buses` (`bus_id`,`bus`,`number_plate`,`seats`,`home`,`site_id`,`status`,`odometer`,`service_due`) VALUES ('3','Rosa','ACK 9989','10','Chingola','1','active','0',NULL);
+INSERT INTO `buses` (`bus_id`,`bus`,`number_plate`,`seats`,`home`,`site_id`,`status`,`odometer`,`service_due`) VALUES ('4','Scarnia','ADE 2424','10','Kitwe','1','active','0',NULL);
+INSERT INTO `buses` (`bus_id`,`bus`,`number_plate`,`seats`,`home`,`site_id`,`status`,`odometer`,`service_due`) VALUES ('5','Mercedes Bus','ACK 2945','7','Ndola','1','active','0',NULL);
+INSERT INTO `buses` (`bus_id`,`bus`,`number_plate`,`seats`,`home`,`site_id`,`status`,`odometer`,`service_due`) VALUES ('6','Tata Bus','BCE 1987','12','Lusaka','1','active','0',NULL);
+INSERT INTO `buses` (`bus_id`,`bus`,`number_plate`,`seats`,`home`,`site_id`,`status`,`odometer`,`service_due`) VALUES ('8','Lusaka Express Coach','HW-LUS-1','48','Lusaka','2','active','42000','2025-06-28');
+INSERT INTO `buses` (`bus_id`,`bus`,`number_plate`,`seats`,`home`,`site_id`,`status`,`odometer`,`service_due`) VALUES ('9','Lusaka Comfort Coach','HW-LUS-2','32','Lusaka','2','active','50000','2025-06-28');
+INSERT INTO `buses` (`bus_id`,`bus`,`number_plate`,`seats`,`home`,`site_id`,`status`,`odometer`,`service_due`) VALUES ('10','Lusaka Reserve Coach','HW-LUS-3','48','Lusaka','2','maintenance','58000','2025-04-27');
+INSERT INTO `buses` (`bus_id`,`bus`,`number_plate`,`seats`,`home`,`site_id`,`status`,`odometer`,`service_due`) VALUES ('11','Kitwe Express Coach','HW-KIT-1','48','Kitwe','3','active','53000','2025-06-29');
+INSERT INTO `buses` (`bus_id`,`bus`,`number_plate`,`seats`,`home`,`site_id`,`status`,`odometer`,`service_due`) VALUES ('12','Kitwe Comfort Coach','HW-KIT-2','32','Kitwe','3','active','61000','2025-06-29');
+INSERT INTO `buses` (`bus_id`,`bus`,`number_plate`,`seats`,`home`,`site_id`,`status`,`odometer`,`service_due`) VALUES ('13','Kitwe Reserve Coach','HW-KIT-3','48','Kitwe','3','retired','69000','2025-04-27');
+INSERT INTO `buses` (`bus_id`,`bus`,`number_plate`,`seats`,`home`,`site_id`,`status`,`odometer`,`service_due`) VALUES ('14','Ndola Express Coach','HW-NDO-1','48','Ndola','4','active','64000','2025-06-30');
+INSERT INTO `buses` (`bus_id`,`bus`,`number_plate`,`seats`,`home`,`site_id`,`status`,`odometer`,`service_due`) VALUES ('15','Ndola Comfort Coach','HW-NDO-2','32','Ndola','4','active','72000','2025-06-30');
+INSERT INTO `buses` (`bus_id`,`bus`,`number_plate`,`seats`,`home`,`site_id`,`status`,`odometer`,`service_due`) VALUES ('16','Ndola Reserve Coach','HW-NDO-3','48','Ndola','4','maintenance','80000','2025-04-27');
+INSERT INTO `buses` (`bus_id`,`bus`,`number_plate`,`seats`,`home`,`site_id`,`status`,`odometer`,`service_due`) VALUES ('17','Chingola Express Coach','HW-CHI-1','48','Chingola','5','active','75000','2025-07-01');
+INSERT INTO `buses` (`bus_id`,`bus`,`number_plate`,`seats`,`home`,`site_id`,`status`,`odometer`,`service_due`) VALUES ('18','Chingola Comfort Coach','HW-CHI-2','32','Chingola','5','active','83000','2025-07-01');
+INSERT INTO `buses` (`bus_id`,`bus`,`number_plate`,`seats`,`home`,`site_id`,`status`,`odometer`,`service_due`) VALUES ('19','Chingola Reserve Coach','HW-CHI-3','48','Chingola','5','retired','91000','2025-04-27');
+INSERT INTO `buses` (`bus_id`,`bus`,`number_plate`,`seats`,`home`,`site_id`,`status`,`odometer`,`service_due`) VALUES ('20','Lusaka Morning Coach','OP-LUS-1','48','Lusaka','2','active','75000','2027-04-29');
+INSERT INTO `buses` (`bus_id`,`bus`,`number_plate`,`seats`,`home`,`site_id`,`status`,`odometer`,`service_due`) VALUES ('21','Lusaka Afternoon Coach','OP-LUS-2','32','Lusaka','2','active','76200','2027-04-29');
+INSERT INTO `buses` (`bus_id`,`bus`,`number_plate`,`seats`,`home`,`site_id`,`status`,`odometer`,`service_due`) VALUES ('22','Kitwe Morning Coach','OP-KIT-1','48','Kitwe','3','active','79000','2027-04-29');
+INSERT INTO `buses` (`bus_id`,`bus`,`number_plate`,`seats`,`home`,`site_id`,`status`,`odometer`,`service_due`) VALUES ('23','Kitwe Afternoon Coach','OP-KIT-2','32','Kitwe','3','active','80200','2027-04-29');
+INSERT INTO `buses` (`bus_id`,`bus`,`number_plate`,`seats`,`home`,`site_id`,`status`,`odometer`,`service_due`) VALUES ('24','Ndola Morning Coach','OP-NDO-1','48','Ndola','4','active','83000','2027-04-29');
+INSERT INTO `buses` (`bus_id`,`bus`,`number_plate`,`seats`,`home`,`site_id`,`status`,`odometer`,`service_due`) VALUES ('25','Ndola Afternoon Coach','OP-NDO-2','32','Ndola','4','active','84200','2027-04-29');
+INSERT INTO `buses` (`bus_id`,`bus`,`number_plate`,`seats`,`home`,`site_id`,`status`,`odometer`,`service_due`) VALUES ('26','Chingola Morning Coach','OP-CHI-1','48','Chingola','5','active','87000','2027-04-29');
+INSERT INTO `buses` (`bus_id`,`bus`,`number_plate`,`seats`,`home`,`site_id`,`status`,`odometer`,`service_due`) VALUES ('27','Chingola Afternoon Coach','OP-CHI-2','32','Chingola','5','active','88200','2027-04-29');
 
---
--- Table structure for table `reservations`
---
+CREATE TABLE `drivers` (
+  `driver_id` int NOT NULL AUTO_INCREMENT,
+  `site_id` int NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `phone` varchar(40) NOT NULL,
+  `licence` varchar(80) NOT NULL,
+  `licence_expiry` date NOT NULL,
+  `status` varchar(20) NOT NULL DEFAULT 'active',
+  PRIMARY KEY (`driver_id`),
+  UNIQUE KEY `licence` (`licence`),
+  KEY `fk_driver_site` (`site_id`),
+  CONSTRAINT `fk_driver_site` FOREIGN KEY (`site_id`) REFERENCES `sites` (`site_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE `reservations` (
-  `reservation_id` int NOT NULL,
-  `user_id` int NOT NULL,
-  `trip_id` int NOT NULL,
-  `seat` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Dumping data for table `reservations`
---
-
-INSERT INTO `reservations` (`reservation_id`, `user_id`, `trip_id`, `seat`) VALUES
-(7, 3, 1, 2),
-(8, 3, 11, 10),
-(9, 2, 4, 7),
-(10, 2, 5, 8),
-(11, 5, 12, 1),
-(12, 5, 15, 4),
-(13, 5, 15, 3),
-(14, 7, 15, 5),
-(15, 7, 4, 10),
-(16, 8, 12, 7),
-(17, 8, 4, 1),
-(18, 9, 14, 2),
-(19, 9, 1, 1),
-(20, 10, 10, 3),
-(21, 10, 10, 1);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `schedule`
---
+INSERT INTO `drivers` (`driver_id`,`site_id`,`name`,`phone`,`licence`,`licence_expiry`,`status`) VALUES ('1','2','Daniel Phiri','Contact branch office','HW-LIC-1-1','2026-04-29','active');
+INSERT INTO `drivers` (`driver_id`,`site_id`,`name`,`phone`,`licence`,`licence_expiry`,`status`) VALUES ('2','2','Ruth Banda','Contact branch office','HW-LIC-1-2','2026-04-29','active');
+INSERT INTO `drivers` (`driver_id`,`site_id`,`name`,`phone`,`licence`,`licence_expiry`,`status`) VALUES ('3','2','Joseph Tembo','Contact branch office','HW-LIC-1-3','2025-04-19','active');
+INSERT INTO `drivers` (`driver_id`,`site_id`,`name`,`phone`,`licence`,`licence_expiry`,`status`) VALUES ('4','3','Grace Mwansa','Contact branch office','HW-LIC-2-1','2026-04-29','active');
+INSERT INTO `drivers` (`driver_id`,`site_id`,`name`,`phone`,`licence`,`licence_expiry`,`status`) VALUES ('5','3','Peter Chileshe','Contact branch office','HW-LIC-2-2','2026-04-29','active');
+INSERT INTO `drivers` (`driver_id`,`site_id`,`name`,`phone`,`licence`,`licence_expiry`,`status`) VALUES ('6','3','Alice Mulenga','Contact branch office','HW-LIC-2-3','2025-04-19','active');
+INSERT INTO `drivers` (`driver_id`,`site_id`,`name`,`phone`,`licence`,`licence_expiry`,`status`) VALUES ('7','4','James Zulu','Contact branch office','HW-LIC-3-1','2026-04-29','active');
+INSERT INTO `drivers` (`driver_id`,`site_id`,`name`,`phone`,`licence`,`licence_expiry`,`status`) VALUES ('8','4','Esther Chanda','Contact branch office','HW-LIC-3-2','2026-04-29','active');
+INSERT INTO `drivers` (`driver_id`,`site_id`,`name`,`phone`,`licence`,`licence_expiry`,`status`) VALUES ('9','4','Samuel Musonda','Contact branch office','HW-LIC-3-3','2025-04-19','active');
+INSERT INTO `drivers` (`driver_id`,`site_id`,`name`,`phone`,`licence`,`licence_expiry`,`status`) VALUES ('10','5','Mary Bwalya','Contact branch office','HW-LIC-4-1','2026-04-29','active');
+INSERT INTO `drivers` (`driver_id`,`site_id`,`name`,`phone`,`licence`,`licence_expiry`,`status`) VALUES ('11','5','David Mumba','Contact branch office','HW-LIC-4-2','2026-04-29','active');
+INSERT INTO `drivers` (`driver_id`,`site_id`,`name`,`phone`,`licence`,`licence_expiry`,`status`) VALUES ('12','5','Lucy Musonda','Contact branch office','HW-LIC-4-3','2025-04-19','active');
+INSERT INTO `drivers` (`driver_id`,`site_id`,`name`,`phone`,`licence`,`licence_expiry`,`status`) VALUES ('13','2','Gift Chisenga','+260 211 567 890','OP-LIC-1-1','2028-04-29','active');
+INSERT INTO `drivers` (`driver_id`,`site_id`,`name`,`phone`,`licence`,`licence_expiry`,`status`) VALUES ('14','2','Linda Sichone','+260 211 567 890','OP-LIC-1-2','2028-04-29','active');
+INSERT INTO `drivers` (`driver_id`,`site_id`,`name`,`phone`,`licence`,`licence_expiry`,`status`) VALUES ('15','3','Patrick Chomba','+260 211 234 567','OP-LIC-2-1','2028-04-29','active');
+INSERT INTO `drivers` (`driver_id`,`site_id`,`name`,`phone`,`licence`,`licence_expiry`,`status`) VALUES ('16','3','Martha Lungu','+260 211 234 567','OP-LIC-2-2','2028-04-29','active');
+INSERT INTO `drivers` (`driver_id`,`site_id`,`name`,`phone`,`licence`,`licence_expiry`,`status`) VALUES ('17','4','Francis Sakala','+260 212 345 678','OP-LIC-3-1','2028-04-29','active');
+INSERT INTO `drivers` (`driver_id`,`site_id`,`name`,`phone`,`licence`,`licence_expiry`,`status`) VALUES ('18','4','Rose Nkhoma','+260 212 345 678','OP-LIC-3-2','2028-04-29','active');
+INSERT INTO `drivers` (`driver_id`,`site_id`,`name`,`phone`,`licence`,`licence_expiry`,`status`) VALUES ('19','5','Andrew Kalaba','+260 212 456 789','OP-LIC-4-1','2028-04-29','active');
+INSERT INTO `drivers` (`driver_id`,`site_id`,`name`,`phone`,`licence`,`licence_expiry`,`status`) VALUES ('20','5','Mercy Chola','+260 212 456 789','OP-LIC-4-2','2028-04-29','active');
 
 CREATE TABLE `schedule` (
-  `trip_id` int NOT NULL,
+  `trip_id` int NOT NULL AUTO_INCREMENT,
   `bus_id` int NOT NULL,
   `home` text NOT NULL,
   `destination` text NOT NULL,
   `departure_time` time NOT NULL,
   `arrival_time` time NOT NULL,
   `date` date NOT NULL,
-  `seats` json NOT NULL
+  `seats` json NOT NULL,
+  `site_id` int DEFAULT NULL,
+  `driver_id` int DEFAULT NULL,
+  `fare` decimal(10,2) NOT NULL DEFAULT '0.00',
+  `status` varchar(20) NOT NULL DEFAULT 'scheduled',
+  `arrival_date` date DEFAULT NULL,
+  PRIMARY KEY (`trip_id`) USING BTREE,
+  KEY `fk_trip_bus` (`bus_id`),
+  KEY `fk_trip_site` (`site_id`),
+  KEY `fk_trip_driver` (`driver_id`),
+  CONSTRAINT `fk_trip_bus` FOREIGN KEY (`bus_id`) REFERENCES `buses` (`bus_id`),
+  CONSTRAINT `fk_trip_driver` FOREIGN KEY (`driver_id`) REFERENCES `drivers` (`driver_id`),
+  CONSTRAINT `fk_trip_site` FOREIGN KEY (`site_id`) REFERENCES `sites` (`site_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=243 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('1','1','Kitwe','Lusaka','05:30:00','15:00:00','2025-05-01','[3, 4, 5, 6, 7, 8, 9, 10]','1',NULL,'0.00','scheduled','2025-05-01');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('2','2','Ndola','Lusaka','12:12:00','12:12:00','2025-05-01','[2, 3, 4, 5, 6, 7, 8, 9, 10]','1',NULL,'0.00','scheduled','2025-05-01');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('3','6','Ndola','Kitwe','07:00:00','08:30:00','2025-05-01','[1, 2, 3, 4, 5, 6, 7]','1',NULL,'0.00','scheduled','2025-05-01');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('4','6','Lusaka','Chingola','05:00:00','14:00:00','2025-05-01','[2, 3, 4, 5, 6, 8, 9, 11, 12]','1',NULL,'0.00','scheduled','2025-05-01');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('5','3','Chingola','Ndola','09:00:00','13:00:00','2025-05-01','[1, 2, 3, 4, 5, 6, 7, 9, 10]','1',NULL,'0.00','scheduled','2025-05-01');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('10','3','Lusaka','Kitwe','12:30:00','22:00:00','2025-05-02','[2, 4, 5, 6, 7, 8, 9, 10]','1',NULL,'0.00','scheduled','2025-05-02');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('11','1','Chingola','Lusaka','05:30:00','14:00:00','2025-05-02','[1, 2, 3, 4, 5, 6, 7, 8, 9]','1',NULL,'0.00','scheduled','2025-05-02');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('12','2','Kitwe','Ndola','09:00:00','11:00:00','2025-05-02','[2, 3, 4, 5, 6, 8, 9, 10]','1',NULL,'0.00','scheduled','2025-05-02');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('13','5','Kitwe','Chingola','12:00:00','14:00:00','2025-05-02','[1, 2, 3, 4, 5, 6, 7]','1',NULL,'0.00','scheduled','2025-05-02');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('14','3','Lusaka','Chingola','07:00:00','22:00:00','2025-05-02','[1, 3, 4, 5, 6, 7, 8, 9, 10]','1',NULL,'0.00','scheduled','2025-05-02');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('15','6','Ndola','Lusaka','05:00:00','16:00:00','2025-05-02','[1, 2, 6, 7, 8, 9, 10, 11, 12]','1',NULL,'0.00','scheduled','2025-05-02');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('16','8','Lusaka','Kitwe','06:30:00','12:30:00','2025-04-30','[1, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','2','1','110.00','scheduled','2025-04-30');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('17','9','Lusaka','Ndola','14:00:00','21:30:00','2025-04-30','[1, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','2','2','155.00','scheduled','2025-04-30');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('18','11','Kitwe','Ndola','06:30:00','12:30:00','2025-04-30','[1, 2, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','3','4','140.00','scheduled','2025-04-30');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('19','12','Kitwe','Chingola','14:00:00','21:30:00','2025-04-30','[1, 2, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','3','5','185.00','scheduled','2025-04-30');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('20','14','Ndola','Chingola','06:30:00','12:30:00','2025-04-30','[1, 2, 3, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','4','7','170.00','scheduled','2025-04-30');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('21','15','Ndola','Lusaka','14:00:00','21:30:00','2025-04-30','[1, 2, 3, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','4','8','215.00','scheduled','2025-04-30');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('22','17','Chingola','Lusaka','06:30:00','12:30:00','2025-04-30','[1, 2, 3, 4, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','5','10','200.00','scheduled','2025-04-30');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('23','18','Chingola','Kitwe','14:00:00','21:30:00','2025-04-30','[1, 2, 3, 4, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','5','11','245.00','scheduled','2025-04-30');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('24','8','Lusaka','Kitwe','06:30:00','12:30:00','2025-05-01','[1, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','2','1','110.00','scheduled','2025-05-01');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('25','9','Lusaka','Ndola','14:00:00','21:30:00','2025-05-01','[1, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','2','2','155.00','scheduled','2025-05-01');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('26','11','Kitwe','Ndola','06:30:00','12:30:00','2025-05-01','[1, 2, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','3','4','140.00','scheduled','2025-05-01');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('27','12','Kitwe','Chingola','14:00:00','21:30:00','2025-05-01','[1, 2, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','3','5','185.00','scheduled','2025-05-01');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('28','14','Ndola','Chingola','06:30:00','12:30:00','2025-05-01','[1, 2, 3, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','4','7','170.00','scheduled','2025-05-01');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('29','15','Ndola','Lusaka','14:00:00','21:30:00','2025-05-01','[1, 2, 3, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','4','8','215.00','scheduled','2025-05-01');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('30','17','Chingola','Lusaka','06:30:00','12:30:00','2025-05-01','[1, 2, 3, 4, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','5','10','200.00','scheduled','2025-05-01');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('31','18','Chingola','Kitwe','14:00:00','21:30:00','2025-05-01','[1, 2, 3, 4, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','5','11','245.00','scheduled','2025-05-01');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('32','8','Lusaka','Kitwe','06:30:00','12:30:00','2025-05-02','[1, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','2','1','110.00','scheduled','2025-05-02');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('33','9','Lusaka','Ndola','14:00:00','21:30:00','2025-05-02','[1, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','2','2','155.00','scheduled','2025-05-02');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('34','11','Kitwe','Ndola','06:30:00','12:30:00','2025-05-02','[1, 2, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','3','4','140.00','scheduled','2025-05-02');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('35','12','Kitwe','Chingola','14:00:00','21:30:00','2025-05-02','[1, 2, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','3','5','185.00','scheduled','2025-05-02');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('36','14','Ndola','Chingola','06:30:00','12:30:00','2025-05-02','[1, 2, 3, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','4','7','170.00','scheduled','2025-05-02');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('37','15','Ndola','Lusaka','14:00:00','21:30:00','2025-05-02','[1, 2, 3, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','4','8','215.00','scheduled','2025-05-02');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('38','17','Chingola','Lusaka','06:30:00','12:30:00','2025-05-02','[1, 2, 3, 4, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','5','10','200.00','scheduled','2025-05-02');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('39','18','Chingola','Kitwe','14:00:00','21:30:00','2025-05-02','[1, 2, 3, 4, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','5','11','245.00','scheduled','2025-05-02');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('40','8','Lusaka','Kitwe','06:30:00','12:30:00','2025-05-03','[1, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','2','1','110.00','scheduled','2025-05-03');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('41','9','Lusaka','Ndola','14:00:00','21:30:00','2025-05-03','[1, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','2','2','155.00','scheduled','2025-05-03');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('42','11','Kitwe','Ndola','06:30:00','12:30:00','2025-05-03','[1, 2, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','3','4','140.00','scheduled','2025-05-03');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('43','12','Kitwe','Chingola','14:00:00','21:30:00','2025-05-03','[1, 2, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','3','5','185.00','scheduled','2025-05-03');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('44','14','Ndola','Chingola','06:30:00','12:30:00','2025-05-03','[1, 2, 3, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','4','7','170.00','scheduled','2025-05-03');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('45','15','Ndola','Lusaka','14:00:00','21:30:00','2025-05-03','[1, 2, 3, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','4','8','215.00','scheduled','2025-05-03');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('46','17','Chingola','Lusaka','06:30:00','12:30:00','2025-05-03','[1, 2, 3, 4, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','5','10','200.00','scheduled','2025-05-03');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('47','18','Chingola','Kitwe','14:00:00','21:30:00','2025-05-03','[1, 2, 3, 4, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','5','11','245.00','scheduled','2025-05-03');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('48','8','Lusaka','Kitwe','06:30:00','12:30:00','2025-05-04','[1, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','2','1','110.00','scheduled','2025-05-04');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('49','9','Lusaka','Ndola','14:00:00','21:30:00','2025-05-04','[1, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','2','2','155.00','scheduled','2025-05-04');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('50','11','Kitwe','Ndola','06:30:00','12:30:00','2025-05-04','[1, 2, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','3','4','140.00','scheduled','2025-05-04');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('51','12','Kitwe','Chingola','14:00:00','21:30:00','2025-05-04','[1, 2, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','3','5','185.00','scheduled','2025-05-04');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('52','14','Ndola','Chingola','06:30:00','12:30:00','2025-05-04','[1, 2, 3, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','4','7','170.00','scheduled','2025-05-04');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('53','15','Ndola','Lusaka','14:00:00','21:30:00','2025-05-04','[1, 2, 3, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','4','8','215.00','scheduled','2025-05-04');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('54','17','Chingola','Lusaka','06:30:00','12:30:00','2025-05-04','[1, 2, 3, 4, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','5','10','200.00','scheduled','2025-05-04');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('55','18','Chingola','Kitwe','14:00:00','21:30:00','2025-05-04','[1, 2, 3, 4, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','5','11','245.00','scheduled','2025-05-04');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('56','8','Lusaka','Kitwe','06:30:00','12:30:00','2025-05-05','[1, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','2','1','110.00','scheduled','2025-05-05');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('57','9','Lusaka','Ndola','14:00:00','21:30:00','2025-05-05','[1, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','2','2','155.00','scheduled','2025-05-05');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('58','11','Kitwe','Ndola','06:30:00','12:30:00','2025-05-05','[1, 2, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','3','4','140.00','scheduled','2025-05-05');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('59','12','Kitwe','Chingola','14:00:00','21:30:00','2025-05-05','[1, 2, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','3','5','185.00','scheduled','2025-05-05');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('60','14','Ndola','Chingola','06:30:00','12:30:00','2025-05-05','[1, 2, 3, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','4','7','170.00','scheduled','2025-05-05');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('61','15','Ndola','Lusaka','14:00:00','21:30:00','2025-05-05','[1, 2, 3, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','4','8','215.00','scheduled','2025-05-05');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('62','17','Chingola','Lusaka','06:30:00','12:30:00','2025-05-05','[1, 2, 3, 4, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','5','10','200.00','scheduled','2025-05-05');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('63','18','Chingola','Kitwe','14:00:00','21:30:00','2025-05-05','[1, 2, 3, 4, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','5','11','245.00','scheduled','2025-05-05');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('64','8','Lusaka','Kitwe','06:30:00','12:30:00','2025-05-06','[1, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','2','1','110.00','scheduled','2025-05-06');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('65','9','Lusaka','Ndola','14:00:00','21:30:00','2025-05-06','[1, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','2','2','155.00','scheduled','2025-05-06');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('66','11','Kitwe','Ndola','06:30:00','12:30:00','2025-05-06','[1, 2, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','3','4','140.00','scheduled','2025-05-06');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('67','12','Kitwe','Chingola','14:00:00','21:30:00','2025-05-06','[1, 2, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','3','5','185.00','scheduled','2025-05-06');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('68','14','Ndola','Chingola','06:30:00','12:30:00','2025-05-06','[1, 2, 3, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','4','7','170.00','scheduled','2025-05-06');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('69','15','Ndola','Lusaka','14:00:00','21:30:00','2025-05-06','[1, 2, 3, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','4','8','215.00','scheduled','2025-05-06');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('70','17','Chingola','Lusaka','06:30:00','12:30:00','2025-05-06','[1, 2, 3, 4, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','5','10','200.00','scheduled','2025-05-06');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('71','18','Chingola','Kitwe','14:00:00','21:30:00','2025-05-06','[1, 2, 3, 4, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','5','11','245.00','scheduled','2025-05-06');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('72','8','Lusaka','Kitwe','06:30:00','12:30:00','2025-05-07','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','2','1','110.00','scheduled','2025-05-07');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('73','9','Lusaka','Ndola','14:00:00','21:30:00','2025-05-07','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','2','2','155.00','scheduled','2025-05-07');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('74','11','Kitwe','Ndola','06:30:00','12:30:00','2025-05-07','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','3','4','140.00','scheduled','2025-05-07');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('75','12','Kitwe','Chingola','14:00:00','21:30:00','2025-05-07','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','3','5','185.00','scheduled','2025-05-07');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('76','14','Ndola','Chingola','06:30:00','12:30:00','2025-05-07','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','4','7','170.00','scheduled','2025-05-07');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('77','15','Ndola','Lusaka','14:00:00','21:30:00','2025-05-07','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','4','8','215.00','scheduled','2025-05-07');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('78','17','Chingola','Lusaka','06:30:00','12:30:00','2025-05-07','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','5','10','200.00','scheduled','2025-05-07');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('79','18','Chingola','Kitwe','14:00:00','21:30:00','2025-05-07','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','5','11','245.00','scheduled','2025-05-07');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('80','8','Lusaka','Kitwe','06:30:00','12:30:00','2025-05-08','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','2','1','110.00','scheduled','2025-05-08');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('81','9','Lusaka','Ndola','14:00:00','21:30:00','2025-05-08','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','2','2','155.00','scheduled','2025-05-08');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('82','11','Kitwe','Ndola','06:30:00','12:30:00','2025-05-08','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','3','4','140.00','scheduled','2025-05-08');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('83','12','Kitwe','Chingola','14:00:00','21:30:00','2025-05-08','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','3','5','185.00','scheduled','2025-05-08');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('84','14','Ndola','Chingola','06:30:00','12:30:00','2025-05-08','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','4','7','170.00','scheduled','2025-05-08');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('85','15','Ndola','Lusaka','14:00:00','21:30:00','2025-05-08','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','4','8','215.00','scheduled','2025-05-08');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('86','17','Chingola','Lusaka','06:30:00','12:30:00','2025-05-08','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','5','10','200.00','scheduled','2025-05-08');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('87','18','Chingola','Kitwe','14:00:00','21:30:00','2025-05-08','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','5','11','245.00','scheduled','2025-05-08');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('88','8','Lusaka','Kitwe','06:30:00','12:30:00','2025-05-09','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','2','1','110.00','scheduled','2025-05-09');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('89','9','Lusaka','Ndola','14:00:00','21:30:00','2025-05-09','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','2','2','155.00','scheduled','2025-05-09');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('90','11','Kitwe','Ndola','06:30:00','12:30:00','2025-05-09','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','3','4','140.00','scheduled','2025-05-09');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('91','12','Kitwe','Chingola','14:00:00','21:30:00','2025-05-09','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','3','5','185.00','scheduled','2025-05-09');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('92','14','Ndola','Chingola','06:30:00','12:30:00','2025-05-09','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','4','7','170.00','scheduled','2025-05-09');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('93','15','Ndola','Lusaka','14:00:00','21:30:00','2025-05-09','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','4','8','215.00','scheduled','2025-05-09');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('94','17','Chingola','Lusaka','06:30:00','12:30:00','2025-05-09','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','5','10','200.00','scheduled','2025-05-09');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('95','18','Chingola','Kitwe','14:00:00','21:30:00','2025-05-09','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','5','11','245.00','scheduled','2025-05-09');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('96','8','Lusaka','Kitwe','06:30:00','12:30:00','2025-05-10','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','2','1','110.00','scheduled','2025-05-10');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('97','9','Lusaka','Ndola','14:00:00','21:30:00','2025-05-10','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','2','2','155.00','scheduled','2025-05-10');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('98','11','Kitwe','Ndola','06:30:00','12:30:00','2025-05-10','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','3','4','140.00','scheduled','2025-05-10');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('99','12','Kitwe','Chingola','14:00:00','21:30:00','2025-05-10','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','3','5','185.00','scheduled','2025-05-10');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('100','14','Ndola','Chingola','06:30:00','12:30:00','2025-05-10','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','4','7','170.00','scheduled','2025-05-10');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('101','15','Ndola','Lusaka','14:00:00','21:30:00','2025-05-10','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','4','8','215.00','scheduled','2025-05-10');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('102','17','Chingola','Lusaka','06:30:00','12:30:00','2025-05-10','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','5','10','200.00','scheduled','2025-05-10');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('103','18','Chingola','Kitwe','14:00:00','21:30:00','2025-05-10','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','5','11','245.00','scheduled','2025-05-10');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('104','8','Lusaka','Kitwe','06:30:00','12:30:00','2025-05-11','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','2','1','110.00','scheduled','2025-05-11');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('105','9','Lusaka','Ndola','14:00:00','21:30:00','2025-05-11','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','2','2','155.00','scheduled','2025-05-11');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('106','11','Kitwe','Ndola','06:30:00','12:30:00','2025-05-11','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','3','4','140.00','scheduled','2025-05-11');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('107','12','Kitwe','Chingola','14:00:00','21:30:00','2025-05-11','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','3','5','185.00','scheduled','2025-05-11');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('108','14','Ndola','Chingola','06:30:00','12:30:00','2025-05-11','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','4','7','170.00','scheduled','2025-05-11');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('109','15','Ndola','Lusaka','14:00:00','21:30:00','2025-05-11','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','4','8','215.00','scheduled','2025-05-11');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('110','17','Chingola','Lusaka','06:30:00','12:30:00','2025-05-11','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','5','10','200.00','scheduled','2025-05-11');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('111','18','Chingola','Kitwe','14:00:00','21:30:00','2025-05-11','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','5','11','245.00','scheduled','2025-05-11');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('112','8','Lusaka','Kitwe','06:30:00','12:30:00','2025-05-12','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','2','1','110.00','scheduled','2025-05-12');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('113','9','Lusaka','Ndola','14:00:00','21:30:00','2025-05-12','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','2','2','155.00','scheduled','2025-05-12');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('114','11','Kitwe','Ndola','06:30:00','12:30:00','2025-05-12','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','3','4','140.00','scheduled','2025-05-12');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('115','12','Kitwe','Chingola','14:00:00','21:30:00','2025-05-12','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','3','5','185.00','scheduled','2025-05-12');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('116','14','Ndola','Chingola','06:30:00','12:30:00','2025-05-12','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','4','7','170.00','scheduled','2025-05-12');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('117','15','Ndola','Lusaka','14:00:00','21:30:00','2025-05-12','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','4','8','215.00','scheduled','2025-05-12');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('118','17','Chingola','Lusaka','06:30:00','12:30:00','2025-05-12','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','5','10','200.00','scheduled','2025-05-12');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('119','18','Chingola','Kitwe','14:00:00','21:30:00','2025-05-12','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','5','11','245.00','scheduled','2025-05-12');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('120','8','Lusaka','Kitwe','06:30:00','12:30:00','2025-05-13','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','2','1','110.00','scheduled','2025-05-13');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('121','9','Lusaka','Ndola','14:00:00','21:30:00','2025-05-13','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','2','2','155.00','scheduled','2025-05-13');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('122','11','Kitwe','Ndola','06:30:00','12:30:00','2025-05-13','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','3','4','140.00','scheduled','2025-05-13');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('123','12','Kitwe','Chingola','14:00:00','21:30:00','2025-05-13','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','3','5','185.00','scheduled','2025-05-13');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('124','14','Ndola','Chingola','06:30:00','12:30:00','2025-05-13','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','4','7','170.00','scheduled','2025-05-13');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('125','15','Ndola','Lusaka','14:00:00','21:30:00','2025-05-13','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','4','8','215.00','scheduled','2025-05-13');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('126','17','Chingola','Lusaka','06:30:00','12:30:00','2025-05-13','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','5','10','200.00','scheduled','2025-05-13');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('127','18','Chingola','Kitwe','14:00:00','21:30:00','2025-05-13','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','5','11','245.00','scheduled','2025-05-13');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('128','8','Lusaka','Kitwe','06:00:00','12:00:00','2025-04-26','[2, 3, 5, 6, 7, 8, 9, 10, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','2','1','180.00','completed','2025-04-26');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('129','11','Kitwe','Ndola','06:00:00','12:00:00','2025-04-25','[1, 2, 3, 5, 6, 7, 8, 9, 10, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','3','4','180.00','departed','2025-04-25');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('130','14','Ndola','Chingola','06:00:00','12:00:00','2025-04-24','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','4','7','180.00','cancelled','2025-04-24');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('131','20','Lusaka','Kitwe','06:30:00','12:30:00','2026-10-24','[1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','2','13','160.00','scheduled','2026-10-24');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('132','20','Lusaka','Kitwe','06:30:00','12:30:00','2026-10-25','[1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','2','13','160.00','scheduled','2026-10-25');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('133','20','Lusaka','Kitwe','06:30:00','12:30:00','2026-10-26','[1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','2','13','160.00','scheduled','2026-10-26');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('134','20','Lusaka','Kitwe','06:30:00','12:30:00','2026-10-27','[1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','2','13','160.00','scheduled','2026-10-27');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('135','20','Lusaka','Kitwe','06:30:00','12:30:00','2026-10-28','[1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','2','13','160.00','scheduled','2026-10-28');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('136','20','Lusaka','Kitwe','06:30:00','12:30:00','2026-10-29','[1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','2','13','160.00','scheduled','2026-10-29');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('137','20','Lusaka','Kitwe','06:30:00','12:30:00','2026-10-30','[1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','2','13','160.00','scheduled','2026-10-30');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('138','20','Lusaka','Kitwe','06:30:00','12:30:00','2026-10-31','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','2','13','160.00','scheduled','2026-10-31');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('139','20','Lusaka','Kitwe','06:30:00','12:30:00','2026-11-01','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','2','13','160.00','scheduled','2026-11-01');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('140','20','Lusaka','Kitwe','06:30:00','12:30:00','2026-11-02','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','2','13','160.00','scheduled','2026-11-02');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('141','20','Lusaka','Kitwe','06:30:00','12:30:00','2026-11-03','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','2','13','160.00','scheduled','2026-11-03');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('142','20','Lusaka','Kitwe','06:30:00','12:30:00','2026-11-04','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','2','13','160.00','scheduled','2026-11-04');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('143','20','Lusaka','Kitwe','06:30:00','12:30:00','2026-11-05','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','2','13','160.00','scheduled','2026-11-05');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('144','20','Lusaka','Kitwe','06:30:00','12:30:00','2026-11-06','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','2','13','160.00','scheduled','2026-11-06');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('145','21','Lusaka','Ndola','14:00:00','21:00:00','2026-10-24','[1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','2','14','190.00','scheduled','2026-10-24');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('146','21','Lusaka','Ndola','14:00:00','21:00:00','2026-10-25','[1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','2','14','190.00','scheduled','2026-10-25');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('147','21','Lusaka','Ndola','14:00:00','21:00:00','2026-10-26','[1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','2','14','190.00','scheduled','2026-10-26');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('148','21','Lusaka','Ndola','14:00:00','21:00:00','2026-10-27','[1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','2','14','190.00','scheduled','2026-10-27');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('149','21','Lusaka','Ndola','14:00:00','21:00:00','2026-10-28','[1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','2','14','190.00','scheduled','2026-10-28');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('150','21','Lusaka','Ndola','14:00:00','21:00:00','2026-10-29','[1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','2','14','190.00','scheduled','2026-10-29');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('151','21','Lusaka','Ndola','14:00:00','21:00:00','2026-10-30','[1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','2','14','190.00','scheduled','2026-10-30');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('152','21','Lusaka','Ndola','14:00:00','21:00:00','2026-10-31','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','2','14','190.00','scheduled','2026-10-31');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('153','21','Lusaka','Ndola','14:00:00','21:00:00','2026-11-01','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','2','14','190.00','scheduled','2026-11-01');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('154','21','Lusaka','Ndola','14:00:00','21:00:00','2026-11-02','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','2','14','190.00','scheduled','2026-11-02');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('155','21','Lusaka','Ndola','14:00:00','21:00:00','2026-11-03','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','2','14','190.00','scheduled','2026-11-03');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('156','21','Lusaka','Ndola','14:00:00','21:00:00','2026-11-04','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','2','14','190.00','scheduled','2026-11-04');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('157','21','Lusaka','Ndola','14:00:00','21:00:00','2026-11-05','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','2','14','190.00','scheduled','2026-11-05');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('158','21','Lusaka','Ndola','14:00:00','21:00:00','2026-11-06','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','2','14','190.00','scheduled','2026-11-06');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('159','22','Kitwe','Ndola','06:30:00','12:30:00','2026-10-24','[1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','3','15','185.00','scheduled','2026-10-24');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('160','22','Kitwe','Ndola','06:30:00','12:30:00','2026-10-25','[1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','3','15','185.00','scheduled','2026-10-25');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('161','22','Kitwe','Ndola','06:30:00','12:30:00','2026-10-26','[1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','3','15','185.00','scheduled','2026-10-26');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('162','22','Kitwe','Ndola','06:30:00','12:30:00','2026-10-27','[1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','3','15','185.00','scheduled','2026-10-27');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('163','22','Kitwe','Ndola','06:30:00','12:30:00','2026-10-28','[1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','3','15','185.00','scheduled','2026-10-28');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('164','22','Kitwe','Ndola','06:30:00','12:30:00','2026-10-29','[1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','3','15','185.00','scheduled','2026-10-29');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('165','22','Kitwe','Ndola','06:30:00','12:30:00','2026-10-30','[1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','3','15','185.00','scheduled','2026-10-30');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('166','22','Kitwe','Ndola','06:30:00','12:30:00','2026-10-31','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','3','15','185.00','scheduled','2026-10-31');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('167','22','Kitwe','Ndola','06:30:00','12:30:00','2026-11-01','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','3','15','185.00','scheduled','2026-11-01');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('168','22','Kitwe','Ndola','06:30:00','12:30:00','2026-11-02','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','3','15','185.00','scheduled','2026-11-02');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('169','22','Kitwe','Ndola','06:30:00','12:30:00','2026-11-03','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','3','15','185.00','scheduled','2026-11-03');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('170','22','Kitwe','Ndola','06:30:00','12:30:00','2026-11-04','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','3','15','185.00','scheduled','2026-11-04');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('171','22','Kitwe','Ndola','06:30:00','12:30:00','2026-11-05','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','3','15','185.00','scheduled','2026-11-05');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('172','22','Kitwe','Ndola','06:30:00','12:30:00','2026-11-06','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','3','15','185.00','scheduled','2026-11-06');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('173','23','Kitwe','Chingola','14:00:00','21:00:00','2026-10-24','[1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','3','16','215.00','scheduled','2026-10-24');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('174','23','Kitwe','Chingola','14:00:00','21:00:00','2026-10-25','[1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','3','16','215.00','scheduled','2026-10-25');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('175','23','Kitwe','Chingola','14:00:00','21:00:00','2026-10-26','[1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','3','16','215.00','scheduled','2026-10-26');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('176','23','Kitwe','Chingola','14:00:00','21:00:00','2026-10-27','[1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','3','16','215.00','scheduled','2026-10-27');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('177','23','Kitwe','Chingola','14:00:00','21:00:00','2026-10-28','[1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','3','16','215.00','scheduled','2026-10-28');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('178','23','Kitwe','Chingola','14:00:00','21:00:00','2026-10-29','[1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','3','16','215.00','scheduled','2026-10-29');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('179','23','Kitwe','Chingola','14:00:00','21:00:00','2026-10-30','[1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','3','16','215.00','scheduled','2026-10-30');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('180','23','Kitwe','Chingola','14:00:00','21:00:00','2026-10-31','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','3','16','215.00','scheduled','2026-10-31');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('181','23','Kitwe','Chingola','14:00:00','21:00:00','2026-11-01','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','3','16','215.00','scheduled','2026-11-01');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('182','23','Kitwe','Chingola','14:00:00','21:00:00','2026-11-02','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','3','16','215.00','scheduled','2026-11-02');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('183','23','Kitwe','Chingola','14:00:00','21:00:00','2026-11-03','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','3','16','215.00','scheduled','2026-11-03');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('184','23','Kitwe','Chingola','14:00:00','21:00:00','2026-11-04','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','3','16','215.00','scheduled','2026-11-04');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('185','23','Kitwe','Chingola','14:00:00','21:00:00','2026-11-05','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','3','16','215.00','scheduled','2026-11-05');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('186','23','Kitwe','Chingola','14:00:00','21:00:00','2026-11-06','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','3','16','215.00','scheduled','2026-11-06');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('187','24','Ndola','Chingola','06:30:00','12:30:00','2026-10-24','[1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','4','17','210.00','scheduled','2026-10-24');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('188','24','Ndola','Chingola','06:30:00','12:30:00','2026-10-25','[1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','4','17','210.00','scheduled','2026-10-25');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('189','24','Ndola','Chingola','06:30:00','12:30:00','2026-10-26','[1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','4','17','210.00','scheduled','2026-10-26');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('190','24','Ndola','Chingola','06:30:00','12:30:00','2026-10-27','[1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','4','17','210.00','scheduled','2026-10-27');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('191','24','Ndola','Chingola','06:30:00','12:30:00','2026-10-28','[1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','4','17','210.00','scheduled','2026-10-28');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('192','24','Ndola','Chingola','06:30:00','12:30:00','2026-10-29','[1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','4','17','210.00','scheduled','2026-10-29');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('193','24','Ndola','Chingola','06:30:00','12:30:00','2026-10-30','[1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','4','17','210.00','scheduled','2026-10-30');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('194','24','Ndola','Chingola','06:30:00','12:30:00','2026-10-31','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','4','17','210.00','scheduled','2026-10-31');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('195','24','Ndola','Chingola','06:30:00','12:30:00','2026-11-01','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','4','17','210.00','scheduled','2026-11-01');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('196','24','Ndola','Chingola','06:30:00','12:30:00','2026-11-02','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','4','17','210.00','scheduled','2026-11-02');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('197','24','Ndola','Chingola','06:30:00','12:30:00','2026-11-03','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','4','17','210.00','scheduled','2026-11-03');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('198','24','Ndola','Chingola','06:30:00','12:30:00','2026-11-04','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','4','17','210.00','scheduled','2026-11-04');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('199','24','Ndola','Chingola','06:30:00','12:30:00','2026-11-05','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','4','17','210.00','scheduled','2026-11-05');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('200','24','Ndola','Chingola','06:30:00','12:30:00','2026-11-06','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','4','17','210.00','scheduled','2026-11-06');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('201','25','Ndola','Lusaka','14:00:00','21:00:00','2026-10-24','[1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','4','18','240.00','scheduled','2026-10-24');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('202','25','Ndola','Lusaka','14:00:00','21:00:00','2026-10-25','[1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','4','18','240.00','scheduled','2026-10-25');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('203','25','Ndola','Lusaka','14:00:00','21:00:00','2026-10-26','[1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','4','18','240.00','scheduled','2026-10-26');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('204','25','Ndola','Lusaka','14:00:00','21:00:00','2026-10-27','[1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','4','18','240.00','scheduled','2026-10-27');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('205','25','Ndola','Lusaka','14:00:00','21:00:00','2026-10-28','[1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','4','18','240.00','scheduled','2026-10-28');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('206','25','Ndola','Lusaka','14:00:00','21:00:00','2026-10-29','[1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','4','18','240.00','scheduled','2026-10-29');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('207','25','Ndola','Lusaka','14:00:00','21:00:00','2026-10-30','[1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','4','18','240.00','scheduled','2026-10-30');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('208','25','Ndola','Lusaka','14:00:00','21:00:00','2026-10-31','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','4','18','240.00','scheduled','2026-10-31');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('209','25','Ndola','Lusaka','14:00:00','21:00:00','2026-11-01','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','4','18','240.00','scheduled','2026-11-01');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('210','25','Ndola','Lusaka','14:00:00','21:00:00','2026-11-02','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','4','18','240.00','scheduled','2026-11-02');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('211','25','Ndola','Lusaka','14:00:00','21:00:00','2026-11-03','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','4','18','240.00','scheduled','2026-11-03');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('212','25','Ndola','Lusaka','14:00:00','21:00:00','2026-11-04','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','4','18','240.00','scheduled','2026-11-04');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('213','25','Ndola','Lusaka','14:00:00','21:00:00','2026-11-05','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','4','18','240.00','scheduled','2026-11-05');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('214','25','Ndola','Lusaka','14:00:00','21:00:00','2026-11-06','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','4','18','240.00','scheduled','2026-11-06');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('215','26','Chingola','Lusaka','06:30:00','12:30:00','2026-10-24','[1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','5','19','235.00','scheduled','2026-10-24');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('216','26','Chingola','Lusaka','06:30:00','12:30:00','2026-10-25','[1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','5','19','235.00','scheduled','2026-10-25');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('217','26','Chingola','Lusaka','06:30:00','12:30:00','2026-10-26','[1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','5','19','235.00','scheduled','2026-10-26');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('218','26','Chingola','Lusaka','06:30:00','12:30:00','2026-10-27','[1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','5','19','235.00','scheduled','2026-10-27');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('219','26','Chingola','Lusaka','06:30:00','12:30:00','2026-10-28','[1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','5','19','235.00','scheduled','2026-10-28');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('220','26','Chingola','Lusaka','06:30:00','12:30:00','2026-10-29','[1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','5','19','235.00','scheduled','2026-10-29');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('221','26','Chingola','Lusaka','06:30:00','12:30:00','2026-10-30','[1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','5','19','235.00','scheduled','2026-10-30');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('222','26','Chingola','Lusaka','06:30:00','12:30:00','2026-10-31','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','5','19','235.00','scheduled','2026-10-31');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('223','26','Chingola','Lusaka','06:30:00','12:30:00','2026-11-01','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','5','19','235.00','scheduled','2026-11-01');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('224','26','Chingola','Lusaka','06:30:00','12:30:00','2026-11-02','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','5','19','235.00','scheduled','2026-11-02');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('225','26','Chingola','Lusaka','06:30:00','12:30:00','2026-11-03','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','5','19','235.00','scheduled','2026-11-03');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('226','26','Chingola','Lusaka','06:30:00','12:30:00','2026-11-04','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','5','19','235.00','scheduled','2026-11-04');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('227','26','Chingola','Lusaka','06:30:00','12:30:00','2026-11-05','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','5','19','235.00','scheduled','2026-11-05');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('228','26','Chingola','Lusaka','06:30:00','12:30:00','2026-11-06','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]','5','19','235.00','scheduled','2026-11-06');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('229','27','Chingola','Kitwe','14:00:00','21:00:00','2026-10-24','[1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','5','20','265.00','scheduled','2026-10-24');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('230','27','Chingola','Kitwe','14:00:00','21:00:00','2026-10-25','[1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','5','20','265.00','scheduled','2026-10-25');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('231','27','Chingola','Kitwe','14:00:00','21:00:00','2026-10-26','[1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','5','20','265.00','scheduled','2026-10-26');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('232','27','Chingola','Kitwe','14:00:00','21:00:00','2026-10-27','[1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','5','20','265.00','scheduled','2026-10-27');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('233','27','Chingola','Kitwe','14:00:00','21:00:00','2026-10-28','[1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','5','20','265.00','scheduled','2026-10-28');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('234','27','Chingola','Kitwe','14:00:00','21:00:00','2026-10-29','[1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','5','20','265.00','scheduled','2026-10-29');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('235','27','Chingola','Kitwe','14:00:00','21:00:00','2026-10-30','[1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','5','20','265.00','scheduled','2026-10-30');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('236','27','Chingola','Kitwe','14:00:00','21:00:00','2026-10-31','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','5','20','265.00','scheduled','2026-10-31');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('237','27','Chingola','Kitwe','14:00:00','21:00:00','2026-11-01','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','5','20','265.00','scheduled','2026-11-01');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('238','27','Chingola','Kitwe','14:00:00','21:00:00','2026-11-02','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','5','20','265.00','scheduled','2026-11-02');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('239','27','Chingola','Kitwe','14:00:00','21:00:00','2026-11-03','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','5','20','265.00','scheduled','2026-11-03');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('240','27','Chingola','Kitwe','14:00:00','21:00:00','2026-11-04','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','5','20','265.00','scheduled','2026-11-04');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('241','27','Chingola','Kitwe','14:00:00','21:00:00','2026-11-05','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','5','20','265.00','scheduled','2026-11-05');
+INSERT INTO `schedule` (`trip_id`,`bus_id`,`home`,`destination`,`departure_time`,`arrival_time`,`date`,`seats`,`site_id`,`driver_id`,`fare`,`status`,`arrival_date`) VALUES ('242','27','Chingola','Kitwe','14:00:00','21:00:00','2026-11-06','[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]','5','20','265.00','scheduled','2026-11-06');
+
+CREATE TABLE `reservations` (
+  `reservation_id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `trip_id` int NOT NULL,
+  `seat` int NOT NULL,
+  `amount` decimal(10,2) NOT NULL DEFAULT '0.00',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`reservation_id`),
+  UNIQUE KEY `uq_trip_seat` (`trip_id`,`seat`),
+  KEY `fk_booking_user` (`user_id`),
+  CONSTRAINT `fk_booking_trip` FOREIGN KEY (`trip_id`) REFERENCES `schedule` (`trip_id`),
+  CONSTRAINT `fk_booking_user` FOREIGN KEY (`user_id`) REFERENCES `login` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=251 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('7','3','1','2','0.00','2026-10-22 13:57:50');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('8','3','11','10','0.00','2026-10-22 13:57:50');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('9','2','4','7','0.00','2026-10-22 13:57:50');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('10','2','5','8','0.00','2026-10-22 13:57:50');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('11','5','12','1','0.00','2026-10-22 13:57:50');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('12','5','15','4','0.00','2026-10-22 13:57:50');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('13','5','15','3','0.00','2026-10-22 13:57:50');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('14','7','15','5','0.00','2026-10-22 13:57:50');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('15','7','4','10','0.00','2026-10-22 13:57:50');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('16','8','12','7','0.00','2026-10-22 13:57:50');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('17','8','4','1','0.00','2026-10-22 13:57:50');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('18','9','14','2','0.00','2026-10-22 13:57:50');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('19','9','1','1','0.00','2026-10-22 13:57:50');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('20','10','10','3','0.00','2026-10-22 13:57:50');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('21','10','10','1','0.00','2026-10-22 13:57:50');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('22','19','16','2','110.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('23','20','16','8','110.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('24','19','17','2','155.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('25','20','17','9','155.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('26','21','18','3','140.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('27','22','18','8','140.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('28','21','19','3','185.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('29','22','19','9','185.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('30','23','20','4','170.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('31','24','20','8','170.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('32','23','21','4','215.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('33','24','21','9','215.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('34','25','22','5','200.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('35','26','22','8','200.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('36','25','23','5','245.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('37','26','23','9','245.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('38','19','24','2','110.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('39','20','24','8','110.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('40','19','25','2','155.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('41','20','25','9','155.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('42','21','26','3','140.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('43','22','26','8','140.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('44','21','27','3','185.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('45','22','27','9','185.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('46','23','28','4','170.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('47','24','28','8','170.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('48','23','29','4','215.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('49','24','29','9','215.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('50','25','30','5','200.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('51','26','30','8','200.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('52','25','31','5','245.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('53','26','31','9','245.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('54','19','32','2','110.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('55','20','32','8','110.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('56','19','33','2','155.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('57','20','33','9','155.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('58','21','34','3','140.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('59','22','34','8','140.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('60','21','35','3','185.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('61','22','35','9','185.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('62','23','36','4','170.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('63','24','36','8','170.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('64','23','37','4','215.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('65','24','37','9','215.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('66','25','38','5','200.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('67','26','38','8','200.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('68','25','39','5','245.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('69','26','39','9','245.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('70','19','40','2','110.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('71','20','40','8','110.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('72','19','41','2','155.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('73','20','41','9','155.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('74','21','42','3','140.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('75','22','42','8','140.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('76','21','43','3','185.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('77','22','43','9','185.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('78','23','44','4','170.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('79','24','44','8','170.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('80','23','45','4','215.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('81','24','45','9','215.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('82','25','46','5','200.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('83','26','46','8','200.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('84','25','47','5','245.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('85','26','47','9','245.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('86','19','48','2','110.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('87','20','48','8','110.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('88','19','49','2','155.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('89','20','49','9','155.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('90','21','50','3','140.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('91','22','50','8','140.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('92','21','51','3','185.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('93','22','51','9','185.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('94','23','52','4','170.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('95','24','52','8','170.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('96','23','53','4','215.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('97','24','53','9','215.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('98','25','54','5','200.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('99','26','54','8','200.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('100','25','55','5','245.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('101','26','55','9','245.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('102','19','56','2','110.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('103','20','56','8','110.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('104','19','57','2','155.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('105','20','57','9','155.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('106','21','58','3','140.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('107','22','58','8','140.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('108','21','59','3','185.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('109','22','59','9','185.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('110','23','60','4','170.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('111','24','60','8','170.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('112','23','61','4','215.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('113','24','61','9','215.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('114','25','62','5','200.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('115','26','62','8','200.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('116','25','63','5','245.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('117','26','63','9','245.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('118','19','64','2','110.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('119','20','64','8','110.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('120','19','65','2','155.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('121','20','65','9','155.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('122','21','66','3','140.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('123','22','66','8','140.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('124','21','67','3','185.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('125','22','67','9','185.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('126','23','68','4','170.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('127','24','68','8','170.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('128','23','69','4','215.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('129','24','69','9','215.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('130','25','70','5','200.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('131','26','70','8','200.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('132','25','71','5','245.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('133','26','71','9','245.00','2025-04-29 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('134','19','128','4','180.00','2025-04-22 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('135','20','128','11','180.00','2025-04-22 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('136','19','129','4','180.00','2025-04-22 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('137','20','129','11','180.00','2025-04-22 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('138','28','128','1','180.00','2025-04-22 09:00:00');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('139','19','131','3','160.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('140','20','131','10','160.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('141','20','132','3','160.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('142','21','132','10','160.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('143','21','133','3','160.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('144','22','133','10','160.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('145','22','134','3','160.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('146','23','134','10','160.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('147','23','135','3','160.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('148','24','135','10','160.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('149','24','136','3','160.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('150','25','136','10','160.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('151','25','137','3','160.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('152','26','137','10','160.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('153','20','145','3','190.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('154','21','145','10','190.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('155','21','146','3','190.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('156','22','146','10','190.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('157','22','147','3','190.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('158','23','147','10','190.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('159','23','148','3','190.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('160','24','148','10','190.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('161','24','149','3','190.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('162','25','149','10','190.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('163','25','150','3','190.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('164','26','150','10','190.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('165','26','151','3','190.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('166','28','151','10','190.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('167','21','159','3','185.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('168','22','159','10','185.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('169','22','160','3','185.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('170','23','160','10','185.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('171','23','161','3','185.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('172','24','161','10','185.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('173','24','162','3','185.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('174','25','162','10','185.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('175','25','163','3','185.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('176','26','163','10','185.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('177','26','164','3','185.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('178','28','164','10','185.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('179','28','165','3','185.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('180','19','165','10','185.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('181','22','173','3','215.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('182','23','173','10','215.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('183','23','174','3','215.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('184','24','174','10','215.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('185','24','175','3','215.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('186','25','175','10','215.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('187','25','176','3','215.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('188','26','176','10','215.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('189','26','177','3','215.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('190','28','177','10','215.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('191','28','178','3','215.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('192','19','178','10','215.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('193','19','179','3','215.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('194','20','179','10','215.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('195','23','187','3','210.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('196','24','187','10','210.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('197','24','188','3','210.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('198','25','188','10','210.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('199','25','189','3','210.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('200','26','189','10','210.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('201','26','190','3','210.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('202','28','190','10','210.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('203','28','191','3','210.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('204','19','191','10','210.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('205','19','192','3','210.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('206','20','192','10','210.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('207','20','193','3','210.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('208','21','193','10','210.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('209','24','201','3','240.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('210','25','201','10','240.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('211','25','202','3','240.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('212','26','202','10','240.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('213','26','203','3','240.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('214','28','203','10','240.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('215','28','204','3','240.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('216','19','204','10','240.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('217','19','205','3','240.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('218','20','205','10','240.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('219','20','206','3','240.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('220','21','206','10','240.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('221','21','207','3','240.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('222','22','207','10','240.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('223','25','215','3','235.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('224','26','215','10','235.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('225','26','216','3','235.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('226','28','216','10','235.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('227','28','217','3','235.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('228','19','217','10','235.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('229','19','218','3','235.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('230','20','218','10','235.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('231','20','219','3','235.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('232','21','219','10','235.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('233','21','220','3','235.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('234','22','220','10','235.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('235','22','221','3','235.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('236','23','221','10','235.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('237','26','229','3','265.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('238','28','229','10','265.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('239','28','230','3','265.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('240','19','230','10','265.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('241','19','231','3','265.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('242','20','231','10','265.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('243','20','232','3','265.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('244','21','232','10','265.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('245','21','233','3','265.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('246','22','233','10','265.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('247','22','234','3','265.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('248','23','234','10','265.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('249','23','235','3','265.00','2026-10-23 04:44:44');
+INSERT INTO `reservations` (`reservation_id`,`user_id`,`trip_id`,`seat`,`amount`,`created_at`) VALUES ('250','24','235','10','265.00','2026-10-23 04:44:44');
+
+CREATE TABLE `maintenance` (
+  `maintenance_id` int NOT NULL AUTO_INCREMENT,
+  `bus_id` int NOT NULL,
+  `service_date` date NOT NULL,
+  `odometer` int NOT NULL,
+  `cost` decimal(12,2) NOT NULL,
+  `notes` varchar(1000) NOT NULL,
+  PRIMARY KEY (`maintenance_id`),
+  KEY `fk_service_bus` (`bus_id`),
+  CONSTRAINT `fk_service_bus` FOREIGN KEY (`bus_id`) REFERENCES `buses` (`bus_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+INSERT INTO `maintenance` (`maintenance_id`,`bus_id`,`service_date`,`odometer`,`cost`,`notes`) VALUES ('1','8','2025-04-15','40000','1800.00','Routine oil and filter service; tyres and lights inspected.');
+INSERT INTO `maintenance` (`maintenance_id`,`bus_id`,`service_date`,`odometer`,`cost`,`notes`) VALUES ('2','9','2025-04-14','48000','2750.00','Brake inspection, wheel alignment and safety check.');
+INSERT INTO `maintenance` (`maintenance_id`,`bus_id`,`service_date`,`odometer`,`cost`,`notes`) VALUES ('3','10','2025-04-13','56000','3700.00','Scheduled workshop inspection; verify fleet status before assignment.');
+INSERT INTO `maintenance` (`maintenance_id`,`bus_id`,`service_date`,`odometer`,`cost`,`notes`) VALUES ('4','11','2025-04-15','51000','1800.00','Routine oil and filter service; tyres and lights inspected.');
+INSERT INTO `maintenance` (`maintenance_id`,`bus_id`,`service_date`,`odometer`,`cost`,`notes`) VALUES ('5','12','2025-04-14','59000','2750.00','Brake inspection, wheel alignment and safety check.');
+INSERT INTO `maintenance` (`maintenance_id`,`bus_id`,`service_date`,`odometer`,`cost`,`notes`) VALUES ('6','13','2025-04-13','67000','3700.00','Scheduled workshop inspection; verify fleet status before assignment.');
+INSERT INTO `maintenance` (`maintenance_id`,`bus_id`,`service_date`,`odometer`,`cost`,`notes`) VALUES ('7','14','2025-04-15','62000','1800.00','Routine oil and filter service; tyres and lights inspected.');
+INSERT INTO `maintenance` (`maintenance_id`,`bus_id`,`service_date`,`odometer`,`cost`,`notes`) VALUES ('8','15','2025-04-14','70000','2750.00','Brake inspection, wheel alignment and safety check.');
+INSERT INTO `maintenance` (`maintenance_id`,`bus_id`,`service_date`,`odometer`,`cost`,`notes`) VALUES ('9','16','2025-04-13','78000','3700.00','Scheduled workshop inspection; verify fleet status before assignment.');
+INSERT INTO `maintenance` (`maintenance_id`,`bus_id`,`service_date`,`odometer`,`cost`,`notes`) VALUES ('10','17','2025-04-15','73000','1800.00','Routine oil and filter service; tyres and lights inspected.');
+INSERT INTO `maintenance` (`maintenance_id`,`bus_id`,`service_date`,`odometer`,`cost`,`notes`) VALUES ('11','18','2025-04-14','81000','2750.00','Brake inspection, wheel alignment and safety check.');
+INSERT INTO `maintenance` (`maintenance_id`,`bus_id`,`service_date`,`odometer`,`cost`,`notes`) VALUES ('12','19','2025-04-13','89000','3700.00','Scheduled workshop inspection; verify fleet status before assignment.');
+INSERT INTO `maintenance` (`maintenance_id`,`bus_id`,`service_date`,`odometer`,`cost`,`notes`) VALUES ('13','20','2026-10-20','74000','2250.00','Oil, brake and tyre inspection completed before scheduled service.');
+INSERT INTO `maintenance` (`maintenance_id`,`bus_id`,`service_date`,`odometer`,`cost`,`notes`) VALUES ('14','21','2026-10-20','75200','2250.00','Oil, brake and tyre inspection completed before scheduled service.');
+INSERT INTO `maintenance` (`maintenance_id`,`bus_id`,`service_date`,`odometer`,`cost`,`notes`) VALUES ('15','22','2026-10-20','78000','2250.00','Oil, brake and tyre inspection completed before scheduled service.');
+INSERT INTO `maintenance` (`maintenance_id`,`bus_id`,`service_date`,`odometer`,`cost`,`notes`) VALUES ('16','23','2026-10-20','79200','2250.00','Oil, brake and tyre inspection completed before scheduled service.');
+INSERT INTO `maintenance` (`maintenance_id`,`bus_id`,`service_date`,`odometer`,`cost`,`notes`) VALUES ('17','24','2026-10-20','82000','2250.00','Oil, brake and tyre inspection completed before scheduled service.');
+INSERT INTO `maintenance` (`maintenance_id`,`bus_id`,`service_date`,`odometer`,`cost`,`notes`) VALUES ('18','25','2026-10-20','83200','2250.00','Oil, brake and tyre inspection completed before scheduled service.');
+INSERT INTO `maintenance` (`maintenance_id`,`bus_id`,`service_date`,`odometer`,`cost`,`notes`) VALUES ('19','26','2026-10-20','86000','2250.00','Oil, brake and tyre inspection completed before scheduled service.');
+INSERT INTO `maintenance` (`maintenance_id`,`bus_id`,`service_date`,`odometer`,`cost`,`notes`) VALUES ('20','27','2026-10-20','87200','2250.00','Oil, brake and tyre inspection completed before scheduled service.');
+
+CREATE TABLE `audit_log` (
+  `audit_id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `action` varchar(80) NOT NULL,
+  `details` varchar(255) NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`audit_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+INSERT INTO `audit_log` (`audit_id`,`user_id`,`action`,`details`,`created_at`) VALUES ('1','15','initialRecords','Branch setup and fleet safety review: Lusaka','2025-04-29 18:20:47');
+INSERT INTO `audit_log` (`audit_id`,`user_id`,`action`,`details`,`created_at`) VALUES ('2','16','initialRecords','Branch setup and fleet safety review: Kitwe','2025-04-29 18:20:47');
+INSERT INTO `audit_log` (`audit_id`,`user_id`,`action`,`details`,`created_at`) VALUES ('3','17','initialRecords','Branch setup and fleet safety review: Ndola','2025-04-29 18:20:47');
+INSERT INTO `audit_log` (`audit_id`,`user_id`,`action`,`details`,`created_at`) VALUES ('4','18','initialRecords','Branch setup and fleet safety review: Chingola','2025-04-29 18:20:47');
+INSERT INTO `audit_log` (`audit_id`,`user_id`,`action`,`details`,`created_at`) VALUES ('5','27','initialRecords','Bookings, maintenance history and dispatch states loaded.','2025-04-29 18:20:47');
+INSERT INTO `audit_log` (`audit_id`,`user_id`,`action`,`details`,`created_at`) VALUES ('6','1','operatingSchedule','Departures added for 24 October to 6 November 2026; pre-service checks recorded.','2026-10-23 04:44:44');
+
+CREATE TABLE `newsletter_subscriptions` (
+  `email` varchar(50) NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
---
--- Dumping data for table `schedule`
---
+INSERT INTO `newsletter_subscriptions` (`email`,`created_at`) VALUES ('passenger1@hardwork.local','2025-04-29 18:20:47');
+INSERT INTO `newsletter_subscriptions` (`email`,`created_at`) VALUES ('passenger2@hardwork.local','2025-04-29 18:20:47');
+INSERT INTO `newsletter_subscriptions` (`email`,`created_at`) VALUES ('passenger3@hardwork.local','2025-04-29 18:20:47');
+INSERT INTO `newsletter_subscriptions` (`email`,`created_at`) VALUES ('passenger4@hardwork.local','2025-04-29 18:20:47');
 
-INSERT INTO `schedule` (`trip_id`, `bus_id`, `home`, `destination`, `departure_time`, `arrival_time`, `date`, `seats`) VALUES
-(1, 1, 'Kitwe', 'Lusaka', '05:30:00', '15:00:00', '2025-05-01', '[3, 4, 5, 6, 7, 8, 9, 10]'),
-(2, 2, 'Ndola', 'Lusaka', '12:12:00', '12:12:00', '2025-05-01', '[2, 3, 4, 5, 6, 7, 8, 9, 10]'),
-(3, 6, 'Ndola', 'Kitwe', '07:00:00', '08:30:00', '2025-05-01', '[1, 2, 3, 4, 5, 6, 7]'),
-(4, 6, 'Lusaka', 'Chingola', '05:00:00', '14:00:00', '2025-05-01', '[2, 3, 4, 5, 6, 8, 9, 11, 12]'),
-(5, 3, 'Chingola', 'Ndola', '09:00:00', '13:00:00', '2025-05-01', '[1, 2, 3, 4, 5, 6, 7, 9, 10]'),
-(10, 3, 'Lusaka', 'Kitwe', '12:30:00', '22:00:00', '2025-05-02', '[2, 4, 5, 6, 7, 8, 9, 10]'),
-(11, 1, 'Chingola', 'Lusaka', '05:30:00', '14:00:00', '2025-05-02', '[1, 2, 3, 4, 5, 6, 7, 8, 9]'),
-(12, 2, 'Kitwe', 'Ndola', '09:00:00', '11:00:00', '2025-05-02', '[2, 3, 4, 5, 6, 8, 9, 10]'),
-(13, 5, 'Kitwe', 'Chingola', '12:00:00', '14:00:00', '2025-05-02', '[1, 2, 3, 4, 5, 6, 7]'),
-(14, 3, 'Lusaka', 'Chingola', '07:00:00', '22:00:00', '2025-05-02', '[1, 3, 4, 5, 6, 7, 8, 9, 10]'),
-(15, 6, 'Ndola', 'Lusaka', '05:00:00', '16:00:00', '2025-05-02', '[1, 2, 6, 7, 8, 9, 10, 11, 12]');
+CREATE TABLE `login_attempts` (
+  `attempt_key` varchar(64) NOT NULL,
+  `attempts` int NOT NULL,
+  `last_attempt` bigint NOT NULL,
+  PRIMARY KEY (`attempt_key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
---
--- Indexes for dumped tables
---
+CREATE TABLE `contact_enquiries` (
+  `enquiry_id` int NOT NULL AUTO_INCREMENT,
+  `site_id` int DEFAULT NULL,
+  `name` varchar(100) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `phone` varchar(40) NOT NULL DEFAULT '',
+  `subject` varchar(150) NOT NULL,
+  `message` text NOT NULL,
+  `status` varchar(20) NOT NULL DEFAULT 'new',
+  `sender_key` char(64) NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`enquiry_id`),
+  KEY `enquiry_sender_time` (`sender_key`,`created_at`),
+  KEY `enquiry_branch` (`site_id`),
+  CONSTRAINT `fk_enquiry_site` FOREIGN KEY (`site_id`) REFERENCES `sites` (`site_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
---
--- Indexes for table `buses`
---
-ALTER TABLE `buses`
-  ADD PRIMARY KEY (`bus_id`);
+INSERT INTO `contact_enquiries` (`enquiry_id`,`site_id`,`name`,`email`,`phone`,`subject`,`message`,`status`,`sender_key`,`created_at`) VALUES ('1','2','Customer Account','customer@hardwork.local','','Route information','Please provide information about the Lusaka to Kitwe departure and boarding point.','new','initial-records','2026-10-23 04:44:44');
+INSERT INTO `contact_enquiries` (`enquiry_id`,`site_id`,`name`,`email`,`phone`,`subject`,`message`,`status`,`sender_key`,`created_at`) VALUES ('2','3','Customer Account','customer@hardwork.local','','Luggage enquiry','Please advise whether a suitcase and a small carry-on bag can be taken on the scheduled coach.','in_progress','initial-records','2026-10-23 04:44:44');
+INSERT INTO `contact_enquiries` (`enquiry_id`,`site_id`,`name`,`email`,`phone`,`subject`,`message`,`status`,`sender_key`,`created_at`) VALUES ('3','4','Customer Account','customer@hardwork.local','','Reservation assistance','I need assistance finding the reservation number for my upcoming journey.','closed','initial-records','2026-10-23 04:44:44');
 
---
--- Indexes for table `login`
---
-ALTER TABLE `login`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `reservations`
---
-ALTER TABLE `reservations`
-  ADD PRIMARY KEY (`reservation_id`);
-
---
--- Indexes for table `schedule`
---
-ALTER TABLE `schedule`
-  ADD PRIMARY KEY (`trip_id`) USING BTREE;
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `buses`
---
-ALTER TABLE `buses`
-  MODIFY `bus_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
-
---
--- AUTO_INCREMENT for table `login`
---
-ALTER TABLE `login`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
-
---
--- AUTO_INCREMENT for table `reservations`
---
-ALTER TABLE `reservations`
-  MODIFY `reservation_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
-
---
--- AUTO_INCREMENT for table `schedule`
---
-ALTER TABLE `schedule`
-  MODIFY `trip_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 COMMIT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+SET FOREIGN_KEY_CHECKS=@OLD_FK;
